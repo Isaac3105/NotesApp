@@ -50,9 +50,18 @@ class _HomePageState extends State<HomePage> {
     void registerFirebase() async {
       final email = _email.text;
       final password = _password.text;
-      final credentials = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: email, password: password);
-      print(credentials);
+      try {
+        UserCredential credentials = await FirebaseAuth.instance
+            .createUserWithEmailAndPassword(email: email, password: password);
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'weak-password') {
+          print('The password provided is too weak.');
+        } else if (e.code == 'email-already-in-use') {
+          print('The account already exists for that email.');
+        }
+      } catch (e) {
+        print(e);
+      }
     }
 
     return Scaffold(
@@ -60,31 +69,44 @@ class _HomePageState extends State<HomePage> {
         title: const Text('Register'),
         backgroundColor: Colors.amber,
       ),
-      body: Column(
-        children: [
-          TextField(
-            decoration: const InputDecoration(
-              hintText: 'Enter your email here',
-            ),
-            controller: _email,
-            autocorrect: false,
-            enableSuggestions: false,
-            keyboardType: TextInputType.emailAddress,
-          ),
-          TextField(
-            decoration: const InputDecoration(
-              hintText: 'Enter your password here',
-            ),
-            controller: _password,
-            obscureText: true,
-            autocorrect: false,
-            enableSuggestions: false,
-          ),
-          TextButton(
-            onPressed: registerFirebase,
-            child: const Text("Register"),
-          ),
-        ],
+      body: FutureBuilder(
+        future: Firebase.initializeApp(
+          options: DefaultFirebaseOptions.currentPlatform,
+        ),
+        builder: (context, asyncSnapshot) {
+          switch (asyncSnapshot.connectionState) {
+            case ConnectionState.done:
+            return Column(
+              children: [
+                TextField(
+                  decoration: const InputDecoration(
+                    hintText: 'Enter your email here',
+                  ),
+                  controller: _email,
+                  autocorrect: false,
+                  enableSuggestions: false,
+                  keyboardType: TextInputType.emailAddress,
+                ),
+                TextField(
+                  decoration: const InputDecoration(
+                    hintText: 'Enter your password here',
+                  ),
+                  controller: _password,
+                  obscureText: true,
+                  autocorrect: false,
+                  enableSuggestions: false,
+                ),
+                TextButton(
+                  onPressed: registerFirebase,
+                  child: const Text("Register"),
+                ),
+              ],
+            );
+            
+            default:
+              return Text("Loading");
+          }
+        },
       ),
     );
   }
