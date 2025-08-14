@@ -31,7 +31,7 @@ class _LoginViewState extends State<LoginView> {
 
   @override
   Widget build(BuildContext context) {
-    void registerFirebase() async {
+    void logInFirebase() async {
       final email = _email.text;
       final password = _password.text;
       try {
@@ -81,7 +81,7 @@ class _LoginViewState extends State<LoginView> {
                     enableSuggestions: false,
                   ),
                   TextButton(
-                    onPressed: registerFirebase,
+                    onPressed: logInFirebase,
                     child: const Text("Log In"),
                   ),
                 ],
