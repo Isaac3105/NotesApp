@@ -1,7 +1,5 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:to_do_app/firebase_options.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({super.key});
@@ -52,50 +50,31 @@ class _RegisterViewState extends State<RegisterView> {
       }
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Register'),
-        backgroundColor: Colors.amber,
-      ),
-      body: FutureBuilder(
-        future: Firebase.initializeApp(
-          options: DefaultFirebaseOptions.currentPlatform,
+    return Column(
+      children: [
+        TextField(
+          decoration: const InputDecoration(
+            hintText: 'Enter your email here',
+          ),
+          controller: _email,
+          autocorrect: false,
+          enableSuggestions: false,
+          keyboardType: TextInputType.emailAddress,
         ),
-        builder: (context, asyncSnapshot) {
-          switch (asyncSnapshot.connectionState) {
-            case ConnectionState.done:
-              return Column(
-                children: [
-                  TextField(
-                    decoration: const InputDecoration(
-                      hintText: 'Enter your email here',
-                    ),
-                    controller: _email,
-                    autocorrect: false,
-                    enableSuggestions: false,
-                    keyboardType: TextInputType.emailAddress,
-                  ),
-                  TextField(
-                    decoration: const InputDecoration(
-                      hintText: 'Enter your password here',
-                    ),
-                    controller: _password,
-                    obscureText: true,
-                    autocorrect: false,
-                    enableSuggestions: false,
-                  ),
-                  TextButton(
-                    onPressed: registerFirebase,
-                    child: const Text("Register"),
-                  ),
-                ],
-              );
-
-            default:
-              return Text("Loading");
-          }
-        },
-      ),
+        TextField(
+          decoration: const InputDecoration(
+            hintText: 'Enter your password here',
+          ),
+          controller: _password,
+          obscureText: true,
+          autocorrect: false,
+          enableSuggestions: false,
+        ),
+        TextButton(
+          onPressed: registerFirebase,
+          child: const Text("Register"),
+        ),
+      ],
     );
   }
 }

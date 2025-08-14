@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:to_do_app/firebase_options.dart';
+import 'package:to_do_app/login_view.dart';
+import 'verify_email_view.dart';
 
 class RouteView extends StatelessWidget {
   const RouteView({super.key});
@@ -23,9 +25,11 @@ class RouteView extends StatelessWidget {
               final user = FirebaseAuth.instance.currentUser;
               if (user?.emailVerified ?? false) {
                 print("verified user");
-              } else{
+              } else {
                 print("not verified user");
+                return const LoginView();
               }
+              print("tá aquiiiiiiiii: ${user}");
               return const Text("Done");
             default:
               return const Text("Loading");

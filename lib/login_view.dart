@@ -1,7 +1,5 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:to_do_app/firebase_options.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -39,6 +37,7 @@ class _LoginViewState extends State<LoginView> {
           email: email,
           password: password,
         );
+        print(FirebaseAuth.instance.currentUser);
       } on FirebaseAuthException catch (e) {
         if (e.code == 'user-not-found') {
           print('No user found for that email.');
@@ -48,51 +47,26 @@ class _LoginViewState extends State<LoginView> {
       }
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Login'),
-        backgroundColor: Colors.amber,
-      ),
-      body: FutureBuilder(
-        future: Firebase.initializeApp(
-          options: DefaultFirebaseOptions.currentPlatform,
+    return Column(
+      children: [
+        TextField(
+          decoration: const InputDecoration(hintText: 'Enter your email here'),
+          controller: _email,
+          autocorrect: false,
+          enableSuggestions: false,
+          keyboardType: TextInputType.emailAddress,
         ),
-        builder: (context, asyncSnapshot) {
-          switch (asyncSnapshot.connectionState) {
-            case ConnectionState.done:
-              return Column(
-                children: [
-                  TextField(
-                    decoration: const InputDecoration(
-                      hintText: 'Enter your email here',
-                    ),
-                    controller: _email,
-                    autocorrect: false,
-                    enableSuggestions: false,
-                    keyboardType: TextInputType.emailAddress,
-                  ),
-                  TextField(
-                    decoration: const InputDecoration(
-                      hintText: 'Enter your password here',
-                    ),
-                    controller: _password,
-                    obscureText: true,
-                    autocorrect: false,
-                    enableSuggestions: false,
-                  ),
-                  TextButton(
-                    onPressed: logInFirebase,
-                    child: const Text("Log In"),
-                  ),
-                ],
-              );
-
-            default:
-              return Text("Loading");
-          }
-        },
-      ),
+        TextField(
+          decoration: const InputDecoration(
+            hintText: 'Enter your password here',
+          ),
+          controller: _password,
+          obscureText: true,
+          autocorrect: false,
+          enableSuggestions: false,
+        ),
+        TextButton(onPressed: logInFirebase, child: const Text("Log In")),
+      ],
     );
   }
 }
-
