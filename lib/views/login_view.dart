@@ -47,26 +47,41 @@ class _LoginViewState extends State<LoginView> {
       }
     }
 
-    return Column(
-      children: [
-        TextField(
-          decoration: const InputDecoration(hintText: 'Enter your email here'),
-          controller: _email,
-          autocorrect: false,
-          enableSuggestions: false,
-          keyboardType: TextInputType.emailAddress,
-        ),
-        TextField(
-          decoration: const InputDecoration(
-            hintText: 'Enter your password here',
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Login"),
+        backgroundColor: Colors.amber,
+      ),
+      body: Column(
+        children: [
+          TextField(
+            decoration: const InputDecoration(hintText: 'Enter your email here'),
+            controller: _email,
+            autocorrect: false,
+            enableSuggestions: false,
+            keyboardType: TextInputType.emailAddress,
           ),
-          controller: _password,
-          obscureText: true,
-          autocorrect: false,
-          enableSuggestions: false,
-        ),
-        TextButton(onPressed: logInFirebase, child: const Text("Log In")),
-      ],
+          TextField(
+            decoration: const InputDecoration(
+              hintText: 'Enter your password here',
+            ),
+            controller: _password,
+            obscureText: true,
+            autocorrect: false,
+            enableSuggestions: false,
+          ),
+          TextButton(onPressed: logInFirebase, child: const Text("Log In")),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                '/register',
+                (route) => false,
+                );
+            },
+            child: const Text("Not registered yet? Press here!"),
+          ),
+        ],
+      )
     );
   }
 }

@@ -40,7 +40,7 @@ class _RegisterViewState extends State<RegisterView> {
       } on FirebaseAuthException catch (e) {
         if (e.code == 'invalid-email') {
           print('The email provided is invalid.');
-        }else if (e.code == 'weak-password') {
+        } else if (e.code == 'weak-password') {
           print('The password provided is too weak.');
         } else if (e.code == 'email-already-in-use') {
           print('The account already exists for that email.');
@@ -50,32 +50,46 @@ class _RegisterViewState extends State<RegisterView> {
       }
     }
 
-    return Column(
-      children: [
-        TextField(
-          decoration: const InputDecoration(
-            hintText: 'Enter your email here',
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Register"),
+        backgroundColor: Colors.amber,
+      ),
+      body: Column(
+        children: [
+          TextField(
+            decoration: const InputDecoration(
+              hintText: 'Enter your email here',
+            ),
+            controller: _email,
+            autocorrect: false,
+            enableSuggestions: false,
+            keyboardType: TextInputType.emailAddress,
           ),
-          controller: _email,
-          autocorrect: false,
-          enableSuggestions: false,
-          keyboardType: TextInputType.emailAddress,
-        ),
-        TextField(
-          decoration: const InputDecoration(
-            hintText: 'Enter your password here',
+          TextField(
+            decoration: const InputDecoration(
+              hintText: 'Enter your password here',
+            ),
+            controller: _password,
+            obscureText: true,
+            autocorrect: false,
+            enableSuggestions: false,
           ),
-          controller: _password,
-          obscureText: true,
-          autocorrect: false,
-          enableSuggestions: false,
-        ),
-        TextButton(
-          onPressed: registerFirebase,
-          child: const Text("Register"),
-        ),
-      ],
+          TextButton(
+            onPressed: registerFirebase,
+            child: const Text("Register"),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                '/login', 
+                (context) => false,
+              );
+            },
+            child: const Text("Registered? Go to Login!"),
+          ),
+        ],
+      ),
     );
   }
 }
-
