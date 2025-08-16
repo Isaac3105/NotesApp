@@ -41,25 +41,34 @@ class _LoginViewState extends State<LoginView> {
           password: password,
         );
 
+        final user = FirebaseAuth.instance.currentUser;
         if (context.mounted) {
-          Navigator.of(context).pushNamedAndRemoveUntil(todoRoute, (route) => false);
+          if ((user?.emailVerified ?? false)) {
+            Navigator.of(
+              context,
+            ).pushNamedAndRemoveUntil(todoRoute, (route) => false);
+          } else {
+            Navigator.of(
+              context,
+            ).pushNamedAndRemoveUntil(verifyRoute, (route) => false);
+          }
         }
 
         devtools.log(FirebaseAuth.instance.currentUser.toString());
       } on FirebaseAuthException catch (e) {
-
         String message;
         if (e.code == 'user-not-found') {
           message = 'No user found for that email.';
-        } else if (e.code == 'wrong-password' || e.code == 'invalid-credential') {
+        } else if (e.code == 'wrong-password' ||
+            e.code == 'invalid-credential') {
           message = 'Invalid email or password. Please try again.';
         } else {
           message = 'Authentication error: ${e.code}';
         }
 
-        if (context.mounted){
+        if (context.mounted) {
           await showMessageDialog(context, "An Error Ocurred", message);
-        } 
+        }
       }
     }
 
