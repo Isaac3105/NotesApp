@@ -5,6 +5,7 @@ import 'package:to_do_app/firebase_options.dart';
 import 'package:to_do_app/views/login_view.dart';
 import 'package:to_do_app/views/register_view.dart';
 import 'package:to_do_app/views/verify_email_view.dart';
+import 'package:to_do_app/views/to_do_view.dart';
 import 'views/route_view.dart';
 
 Future<void> main() async {
@@ -22,6 +23,7 @@ Future<void> main() async {
         '/login' : (context) => const LoginView(),
         '/register' : (context) => const RegisterView(),
         '/verify': (context) => const VerifyEmailView(),
+        '/todo': (context) => const ToDoView(),
       },
     ),
   );
