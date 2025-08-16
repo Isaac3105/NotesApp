@@ -1,8 +1,6 @@
-import 'dart:developer';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'dart:developer' as devtools show log;
+import 'package:to_do_app/constants/routes.dart';
 
 enum MenuAction { logout }
 
@@ -33,7 +31,7 @@ class _ToDoViewState extends State<ToDoView> {
                     await FirebaseAuth.instance.signOut();
                     
                     navigator.pushNamedAndRemoveUntil(
-                      "/login",
+                      loginRoute,
                       (_) => false,
                     );
                   }

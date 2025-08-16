@@ -11,10 +11,6 @@ class VerifyEmailView extends StatefulWidget {
 class _VerifyEmailViewState extends State<VerifyEmailView> {
   @override
   Widget build(BuildContext context) {
-    void sendVerification() async {
-      final user = FirebaseAuth.instance.currentUser;
-      await user?.sendEmailVerification();
-    }
 
     return Scaffold(
       appBar: AppBar(
@@ -34,3 +30,8 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
     
   }
 }
+
+void sendVerification() async {
+      final user = FirebaseAuth.instance.currentUser;
+      await user?.sendEmailVerification();
+    }
