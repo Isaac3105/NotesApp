@@ -58,7 +58,7 @@ class _LoginViewState extends State<LoginView> {
         }
 
         if (context.mounted){
-          await showErorDialog(context, message);
+          await showMessageDialog(context, "An Error Ocurred", message);
         } 
       }
     }

@@ -39,6 +39,11 @@ class _RegisterViewState extends State<RegisterView> {
           email: email,
           password: password,
         );
+        if (context.mounted) {
+          final user = FirebaseAuth.instance.currentUser;
+          await user?.sendEmailVerification();
+          Navigator.of(context).pushNamed(verifyRoute);
+        }
       } on FirebaseAuthException catch (e) {
         String message;
         if (e.code == 'invalid-email') {
@@ -51,7 +56,7 @@ class _RegisterViewState extends State<RegisterView> {
           message = 'Authentication error: ${e.code}';
         }
         if (context.mounted) {
-          await showErorDialog(context, message);
+          await showMessageDialog(context, "An Error Ocurred", message);
         }
       }
     }
