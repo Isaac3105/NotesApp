@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:to_do_app/firebase_options.dart';
 import 'package:to_do_app/views/login_view.dart';
+import 'package:to_do_app/views/to_do_view.dart';
 import 'verify_email_view.dart';
 
 class RouteView extends StatelessWidget {
@@ -18,14 +19,15 @@ class RouteView extends StatelessWidget {
         switch (asyncSnapshot.connectionState) {
           case ConnectionState.done:
             final user = FirebaseAuth.instance.currentUser;
-            if (user?.emailVerified ?? false) {
-              print("verified user");
+            if (user != null) {
+              if (user.emailVerified) {
+                return const ToDoView();
+              } else {
+                return const VerifyEmailView();
+              }
             } else {
-              print("not verified user");
               return const LoginView();
             }
-            print("tá aquiiiiiiiii: ${user}");
-            return const Text("Done");
           default:
             return const CircularProgressIndicator();
         }

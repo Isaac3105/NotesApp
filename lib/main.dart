@@ -17,7 +17,7 @@ Future<void> main() async {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const LoginView(),
+      home: const RouteView(),
       routes: {
         '/login' : (context) => const LoginView(),
         '/register' : (context) => const RegisterView(),
