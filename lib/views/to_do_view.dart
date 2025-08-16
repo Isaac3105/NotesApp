@@ -23,17 +23,16 @@ class _ToDoViewState extends State<ToDoView> {
             onSelected: (value) async {
               switch (value) {
                 case MenuAction.logout:
-                  final navigator = Navigator.of(context);
                   final shouldLogOut = await showLogOutDialog(context);
-                  if (!mounted) return;
 
                   if (shouldLogOut) {
                     await FirebaseAuth.instance.signOut();
-                    
-                    navigator.pushNamedAndRemoveUntil(
-                      loginRoute,
-                      (_) => false,
-                    );
+                    if (context.mounted){
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                        loginRoute,
+                        (_) => false,
+                      );
+                    }
                   }
                   break;
               }

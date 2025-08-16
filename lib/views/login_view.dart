@@ -36,25 +36,30 @@ class _LoginViewState extends State<LoginView> {
       final email = _email.text;
       final password = _password.text;
       try {
-        final navigator = Navigator.of(context);
-
         await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: email,
           password: password,
         );
 
-        if (!mounted) return;
-
-        navigator.pushNamedAndRemoveUntil(todoRoute, (route) => false);
+        if (context.mounted) {
+          Navigator.of(context).pushNamedAndRemoveUntil(todoRoute, (route) => false);
+        }
 
         devtools.log(FirebaseAuth.instance.currentUser.toString());
       } on FirebaseAuthException catch (e) {
+
+        String message;
         if (e.code == 'user-not-found') {
-          
-          devtools.log('No user found for that email.');
-        } else if (e.code == 'wrong-password') {
-          devtools.log('Wrong password provided for that user.');
+          message = 'No user found for that email.';
+        } else if (e.code == 'wrong-password' || e.code == 'invalid-credential') {
+          message = 'Invalid email or password. Please try again.';
+        } else {
+          message = 'Authentication error: ${e.code}';
         }
+
+        if (context.mounted){
+          await showErorDialog(context, message);
+        } 
       }
     }
 
@@ -93,4 +98,24 @@ class _LoginViewState extends State<LoginView> {
       ),
     );
   }
+}
+
+Future<void> showErorDialog(BuildContext context, String text) {
+  return showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: const Text("An Error Ocurred"),
+        content: Text(text),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text("Ok"),
+          ),
+        ],
+      );
+    },
+  );
 }
