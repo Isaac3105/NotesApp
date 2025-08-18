@@ -1,3 +1,4 @@
+import 'dart:developer' show log;
 import 'dart:io';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -30,7 +31,7 @@ Future<void> main() async {
 }
 ''';
   File('android/app/google-services.json').writeAsStringSync(androidJson);
-  print('Generated android/app/google-services.json');
+  log('Generated android/app/google-services.json');
 
   // iOS GoogleService-Info.plist
   final iosPlist = '''
@@ -55,5 +56,5 @@ Future<void> main() async {
 </plist>
 ''';
   File('ios/Runner/GoogleService-Info.plist').writeAsStringSync(iosPlist);
-  print('Generated ios/Runner/GoogleService-Info.plist');
+  log('Generated ios/Runner/GoogleService-Info.plist');
 }
