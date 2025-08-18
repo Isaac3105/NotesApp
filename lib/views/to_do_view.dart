@@ -1,7 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:to_do_app/constants/routes.dart';
 import 'package:to_do_app/enums/menu_actions.dart';
+import 'package:to_do_app/services/auth/auth_service.dart';
 
 class ToDoView extends StatefulWidget {
   const ToDoView({super.key});
@@ -25,7 +25,7 @@ class _ToDoViewState extends State<ToDoView> {
                   final shouldLogOut = await showLogOutDialog(context);
 
                   if (shouldLogOut) {
-                    await FirebaseAuth.instance.signOut();
+                    await AuthService.firebase().logOut();
                     if (context.mounted){
                       Navigator.of(context).pushNamedAndRemoveUntil(
                         loginRoute,
