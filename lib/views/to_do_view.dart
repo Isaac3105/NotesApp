@@ -1,8 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:to_do_app/constants/routes.dart';
-
-enum MenuAction { logout }
+import 'package:to_do_app/enums/menu_actions.dart';
 
 class ToDoView extends StatefulWidget {
   const ToDoView({super.key});
