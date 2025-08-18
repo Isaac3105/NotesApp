@@ -1,7 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as devtools show log;
 import 'package:to_do_app/constants/routes.dart';
+import 'package:to_do_app/services/auth/auth_exceptions.dart';
+import 'package:to_do_app/services/auth/auth_service.dart';
 import 'package:to_do_app/util.dart';
 
 class LoginView extends StatefulWidget {
@@ -36,14 +37,14 @@ class _LoginViewState extends State<LoginView> {
       final email = _email.text;
       final password = _password.text;
       try {
-        await FirebaseAuth.instance.signInWithEmailAndPassword(
+        await AuthService.firebase().logIn(
           email: email,
           password: password,
         );
 
-        final user = FirebaseAuth.instance.currentUser;
+        final user = AuthService.firebase().currentUser;
         if (context.mounted) {
-          if ((user?.emailVerified ?? false)) {
+          if ((user?.isEmailVerified ?? false)) {
             Navigator.of(
               context,
             ).pushNamedAndRemoveUntil(todoRoute, (route) => false);
@@ -54,22 +55,20 @@ class _LoginViewState extends State<LoginView> {
           }
         }
 
-        devtools.log(FirebaseAuth.instance.currentUser.toString());
-      } on FirebaseAuthException catch (e) {
-        String message;
-        if (e.code == 'user-not-found') {
-          message = 'No user found for that email.';
-        } else if (e.code == 'wrong-password' ||
-            e.code == 'invalid-credential') {
-          message = 'Invalid email or password. Please try again.';
-        } else {
-          message = 'Authentication error: ${e.code}';
-        }
-
+        devtools.log("usuario aquiiiiiii: ${user.toString()}");
+      } on UserNotFoundAuthException catch (_) {
         if (context.mounted) {
-          await showMessageDialog(context, "An Error Ocurred", message);
+          await showMessageDialog(context, "An Error Ocurred", 'No user found for that email.');
         }
-      }
+      } on WrongPasswordAuthException catch (_) {
+        if (context.mounted) {
+          await showMessageDialog(context, "An Error Ocurred", 'Invalid email or password. Please try again.');
+        }
+      } on GenericAuthException catch (_) {
+        if (context.mounted) {
+          await showMessageDialog(context, "An Error Ocurred", 'Authentication error');
+        }
+      } 
     }
 
     return Scaffold(

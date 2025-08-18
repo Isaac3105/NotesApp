@@ -1,6 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:to_do_app/constants/routes.dart';
+import 'package:to_do_app/services/auth/auth_exceptions.dart';
+import 'package:to_do_app/services/auth/auth_service.dart';
 import 'package:to_do_app/util.dart';
 
 class RegisterView extends StatefulWidget {
@@ -35,28 +36,45 @@ class _RegisterViewState extends State<RegisterView> {
       final email = _email.text;
       final password = _password.text;
       try {
-        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        await AuthService.firebase().createUser(
           email: email,
           password: password,
         );
         if (context.mounted) {
-          final user = FirebaseAuth.instance.currentUser;
-          await user?.sendEmailVerification();
-          Navigator.of(context).pushNamed(verifyRoute);
+          await AuthService.firebase().sendEmailVerification();
+          if (context.mounted) Navigator.of(context).pushNamed(verifyRoute);
         }
-      } on FirebaseAuthException catch (e) {
-        String message;
-        if (e.code == 'invalid-email') {
-          message = 'The email provided is invalid.';
-        } else if (e.code == 'weak-password') {
-          message = 'The password provided is too weak.';
-        } else if (e.code == 'email-already-in-use') {
-          message = 'An account already exists for that email.';
-        } else {
-          message = 'Authentication error: ${e.code}';
-        }
+      } on InvalidEmailAuthException catch (_) {
         if (context.mounted) {
-          await showMessageDialog(context, "An Error Ocurred", message);
+          await showMessageDialog(
+            context,
+            "An Error Ocurred",
+            'The email provided is invalid.',
+          );
+        }
+      } on WeakPasswordAuthException catch (_) {
+        if (context.mounted) {
+          await showMessageDialog(
+            context,
+            "An Error Ocurred",
+            'The password provided is too weak.',
+          );
+        }
+      } on EmailAlreadyInUseAuthException catch (_) {
+        if (context.mounted) {
+          await showMessageDialog(
+            context,
+            "An Error Ocurred",
+            'An account already exists for that email.',
+          );
+        }
+      } on GenericAuthException catch (_) {
+        if (context.mounted) {
+          await showMessageDialog(
+            context,
+            "An Error Ocurred",
+            'Authentication error',
+          );
         }
       }
     }
