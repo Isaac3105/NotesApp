@@ -1,9 +1,14 @@
-import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart'
     show MissingPlatformDirectoryException, getApplicationDocumentsDirectory;
 import 'package:path/path.dart';
+import 'package:to_do_app/services/crud/constants/crate_user_table.dart';
+import 'package:to_do_app/services/crud/constants/create_note_table.dart';
+import 'package:to_do_app/services/crud/constants/database_name.dart';
+import 'package:to_do_app/services/crud/constants/notes_and_user_database_columns.dart';
 import 'package:to_do_app/services/crud/crud_exceptions.dart';
+import 'package:to_do_app/services/crud/database_note.dart';
+import 'package:to_do_app/services/crud/database_user.dart';
 
 class NotesService {
   Database? _db;
@@ -156,75 +161,3 @@ class NotesService {
     _db = null;
   }
 }
-
-@immutable
-class DatabaseUser {
-  final int id;
-  final String email;
-  const DatabaseUser({required this.id, required this.email});
-
-  DatabaseUser.fromRow(Map<String, Object?> map)
-    : id = map[idColumn] as int,
-      email = map[emailColumn] as String;
-
-  @override
-  String toString() => 'Person, ID = $id, email =$email';
-
-  @override
-  operator ==(covariant DatabaseUser other) => id == other.id;
-
-  @override
-  int get hashCode => id.hashCode;
-}
-
-@immutable
-class DatabaseNote {
-  final int id;
-  final int userId;
-  final String text;
-  const DatabaseNote({
-    required this.id,
-    required this.userId,
-    required this.text,
-  });
-
-  DatabaseNote.fromRow(Map<String, Object?> map)
-    : id = map[idColumn] as int,
-      userId = map[userIdColumn] as int,
-      text = map[textColumn] as String;
-
-  @override
-  String toString() => 'Note, ID = $id, userId =$userId, text =$text';
-
-  @override
-  operator ==(covariant DatabaseNote other) => id == other.id;
-
-  @override
-  int get hashCode => id.hashCode;
-}
-
-const dbName = 'notes.db';
-const noteTable = 'note';
-const userTable = 'user';
-const idColumn = "id";
-const emailColumn = "email";
-const userIdColumn = "user_id";
-const textColumn = "text";
-
-const createUserTable = '''
-      CREATE TABLE IF NOT EXISTS "user" (
-        "id"	INTEGER NOT NULL,
-        "email"	TEXT NOT NULL UNIQUE,
-        PRIMARY KEY("id" AUTOINCREMENT)
-      );
-      ''';
-
-const createNoteTable = '''
-      CREATE TABLE IF NOT EXISTS "notes" (
-        "id"	INTEGER NOT NULL,
-        "user_id"	INTEGER NOT NULL,
-        "text"	TEXT,
-        PRIMARY KEY("id" AUTOINCREMENT),
-        FOREIGN KEY("user_id") REFERENCES ""
-      );
-      ''';
