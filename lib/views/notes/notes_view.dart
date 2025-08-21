@@ -1,8 +1,13 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:sqflite/sqlite_api.dart';
 import 'package:to_do_app/constants/routes.dart';
 import 'package:to_do_app/enums/menu_actions.dart';
 import 'package:to_do_app/services/auth/auth_service.dart';
+import 'package:to_do_app/services/crud/database_note.dart';
 import 'package:to_do_app/services/crud/notes_service.dart';
+import 'package:to_do_app/views/notes/new_note_view.dart';
 
 class ToDoView extends StatefulWidget {
   const ToDoView({super.key});
@@ -18,14 +23,7 @@ class _ToDoViewState extends State<ToDoView> {
   @override
   void initState() {
     _notesService = NotesService();
-    _notesService.open();
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    _notesService.close();
-    super.dispose();
   }
 
   @override
@@ -76,7 +74,27 @@ class _ToDoViewState extends State<ToDoView> {
                 builder: (context, snapshot) {
                   switch (snapshot.connectionState) {
                     case ConnectionState.waiting:
-                      return const Text('Wainting for notes...');
+                    case ConnectionState.active:
+                      if (snapshot.hasData) {
+                        final allNotes = snapshot.data as List<DatabaseNote>;
+                        print(allNotes.toString());
+                        return ListView.builder(
+                          itemCount: allNotes.length,
+                          itemBuilder: (context, index) {
+                            final note = allNotes[index];
+                            return ListTile(
+                              title: Text(
+                                note.text,
+                                maxLines: 1,
+                                softWrap: true,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              //onTap: NewNoteView(),
+                            );
+                          },
+                        );
+                      }
+                      return const Center(child: CircularProgressIndicator());
                     default:
                       return const Center(child: CircularProgressIndicator());
                   }

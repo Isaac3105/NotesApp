@@ -87,6 +87,9 @@ class _NewNoteViewState extends State<NewNoteView> {
                 autocorrect: true,
                 keyboardType: TextInputType.multiline,
                 maxLines: null,
+                decoration: InputDecoration(
+                  hintText: "Start typing your note :)",
+                ),
               );
             default:
               return const Center(child: CircularProgressIndicator());
