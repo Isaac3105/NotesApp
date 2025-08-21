@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:to_do_app/services/auth/auth_service.dart';
 import 'package:to_do_app/views/login_view.dart';
-import 'package:to_do_app/views/to_do_view.dart';
+import 'package:to_do_app/views/notes/notes_view.dart';
 import 'verify_email_view.dart';
 
 class RouteView extends StatelessWidget {

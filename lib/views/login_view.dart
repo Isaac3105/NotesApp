@@ -64,6 +64,10 @@ class _LoginViewState extends State<LoginView> {
         if (context.mounted) {
           await showMessageDialog(context, "An Error Ocurred", 'Invalid email or password. Please try again.');
         }
+      } on InvalidCredentialAuthException catch (_) {
+        if (context.mounted) {
+          await showMessageDialog(context, "An Error Ocurred", 'Invalid email or password. Please try again.');
+        }
       } on GenericAuthException catch (_) {
         if (context.mounted) {
           await showMessageDialog(context, "An Error Ocurred", 'Authentication error');
