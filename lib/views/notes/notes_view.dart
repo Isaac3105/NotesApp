@@ -1,13 +1,11 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:sqflite/sqlite_api.dart';
 import 'package:to_do_app/constants/routes.dart';
 import 'package:to_do_app/enums/menu_actions.dart';
 import 'package:to_do_app/services/auth/auth_service.dart';
 import 'package:to_do_app/services/crud/database_note.dart';
 import 'package:to_do_app/services/crud/notes_service.dart';
-import 'package:to_do_app/views/notes/new_note_view.dart';
+import 'package:to_do_app/utils/dialogs/log_out_dialog.dart';
+import 'package:to_do_app/views/notes/notes_list_view.dart';
 
 class ToDoView extends StatefulWidget {
   const ToDoView({super.key});
@@ -78,28 +76,10 @@ class _ToDoViewState extends State<ToDoView> {
                       if (snapshot.hasData) {
                         final allNotes = snapshot.data as List<DatabaseNote>;
                         print(allNotes.toString());
-                        return ListView.separated(
-                          itemCount: allNotes.length,
-                          separatorBuilder: (context, index) =>
-                              const SizedBox(height: 8.0),
-                          itemBuilder: (context, index) {
-                            final note = allNotes[index];
-                            return Card(
-                              margin: const EdgeInsets.symmetric(
-                                vertical: 4.0,
-                                horizontal: 8.0,
-                              ),
-                              child: ListTile(
-                                title: Text(
-                                  note.text,
-                                  maxLines: 1,
-                                  softWrap: true,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                onTap: () {},
-                                //onTap: NewNoteView(),
-                              ),
-                            );
+                        return NotesListView(
+                          notes: allNotes,
+                          oneDeleteNote: (note) async {
+                            await _notesService.deleteNote(id: note.id);
                           },
                         );
                       }
@@ -116,30 +96,4 @@ class _ToDoViewState extends State<ToDoView> {
       ),
     );
   }
-}
-
-Future<bool> showLogOutDialog(BuildContext context) {
-  return showDialog<bool>(
-    context: context,
-    builder: (context) {
-      return AlertDialog(
-        title: const Text("Log Out"),
-        content: const Text("Are you sure you want to log out?"),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop(false);
-            },
-            child: const Text("Cancel"),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop(true);
-            },
-            child: const Text("Log Out"),
-          ),
-        ],
-      );
-    },
-  ).then((value) => value ?? false);
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:to_do_app/constants/routes.dart';
 import 'package:to_do_app/services/auth/auth_service.dart';
-import 'package:to_do_app/util.dart';
+import 'package:to_do_app/utils/dialogs/email_verification_dialog.dart';
 
 class VerifyEmailView extends StatefulWidget {
   const VerifyEmailView({super.key});
@@ -52,6 +52,6 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
 void sendVerification(BuildContext context) async {
   await AuthService.firebase().sendEmailVerification();
   if (context.mounted) {
-    await showMessageDialog(context, "Email Authentification", "Email sent.");
+    await showEmailVerificationDialog(context, "Email sent.");
   }
 }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:to_do_app/constants/routes.dart';
 import 'package:to_do_app/services/auth/auth_exceptions.dart';
 import 'package:to_do_app/services/auth/auth_service.dart';
-import 'package:to_do_app/util.dart';
+import 'package:to_do_app/utils/dialogs/error_dialog.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({super.key});
@@ -46,33 +46,29 @@ class _RegisterViewState extends State<RegisterView> {
         }
       } on InvalidEmailAuthException catch (_) {
         if (context.mounted) {
-          await showMessageDialog(
+          await showErrorDialog(
             context,
-            "An Error Ocurred",
             'The email provided is invalid.',
           );
         }
       } on WeakPasswordAuthException catch (_) {
         if (context.mounted) {
-          await showMessageDialog(
+          await showErrorDialog(
             context,
-            "An Error Ocurred",
             'The password provided is too weak.',
           );
         }
       } on EmailAlreadyInUseAuthException catch (_) {
         if (context.mounted) {
-          await showMessageDialog(
+          await showErrorDialog(
             context,
-            "An Error Ocurred",
             'An account already exists for that email.',
           );
         }
       } on GenericAuthException catch (_) {
         if (context.mounted) {
-          await showMessageDialog(
+          await showErrorDialog(
             context,
-            "An Error Ocurred",
             'Authentication error',
           );
         }

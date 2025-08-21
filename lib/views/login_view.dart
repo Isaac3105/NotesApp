@@ -3,7 +3,7 @@ import 'dart:developer' as devtools show log;
 import 'package:to_do_app/constants/routes.dart';
 import 'package:to_do_app/services/auth/auth_exceptions.dart';
 import 'package:to_do_app/services/auth/auth_service.dart';
-import 'package:to_do_app/util.dart';
+import 'package:to_do_app/utils/dialogs/error_dialog.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -58,19 +58,19 @@ class _LoginViewState extends State<LoginView> {
         devtools.log("usuario aquiiiiiii: ${user.toString()}");
       } on UserNotFoundAuthException catch (_) {
         if (context.mounted) {
-          await showMessageDialog(context, "An Error Ocurred", 'No user found for that email.');
+          await showErrorDialog(context, 'No user found for that email.');
         }
       } on WrongPasswordAuthException catch (_) {
         if (context.mounted) {
-          await showMessageDialog(context, "An Error Ocurred", 'Invalid email or password. Please try again.');
+          await showErrorDialog(context, 'Invalid email or password. Please try again.');
         }
       } on InvalidCredentialAuthException catch (_) {
         if (context.mounted) {
-          await showMessageDialog(context, "An Error Ocurred", 'Invalid email or password. Please try again.');
+          await showErrorDialog(context, 'Invalid email or password. Please try again.');
         }
       } on GenericAuthException catch (_) {
         if (context.mounted) {
-          await showMessageDialog(context, "An Error Ocurred", 'Authentication error');
+          await showErrorDialog(context, 'Authentication error');
         }
       } 
     }
