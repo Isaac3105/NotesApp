@@ -3,6 +3,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart'
     show MissingPlatformDirectoryException, getApplicationDocumentsDirectory;
 import 'package:path/path.dart';
+import 'package:to_do_app/extensions/list/filter.dart';
 import 'package:to_do_app/services/crud/constants/crate_user_table.dart';
 import 'package:to_do_app/services/crud/constants/create_note_table.dart';
 import 'package:to_do_app/services/crud/constants/database_name.dart';
@@ -15,6 +16,8 @@ class NotesService {
   Database? _db;
 
   List<DatabaseNote> _notes = [];
+
+  DatabaseUser? _user;
 
   static final NotesService _shared = NotesService._sharedInstance();
 
@@ -38,14 +41,31 @@ class NotesService {
     }
   }
 
-  Stream<List<DatabaseNote>> get allNotes => _notesStreamController.stream;
+  Stream<List<DatabaseNote>> get allNotes =>
+      _notesStreamController.stream.filter((note) {
+        final currentUser = _user;
+        if (currentUser != null) {
+          return currentUser.id == note.userId;
+        } else {
+          throw UserShouldBeSetBeforeReadingNotes();
+        }
+      });
 
-  Future<DatabaseUser> getOrCreateUser({required String email}) async {
+  Future<DatabaseUser> getOrCreateUser({
+    required String email,
+    bool setAsCurrentUser = true,
+  }) async {
     try {
       final user = await getUser(email: email);
+      if (setAsCurrentUser) {
+        _user = user;
+      }
       return user;
     } on CouldNotFindUserException {
       final createdUser = await createUser(email: email);
+      if (setAsCurrentUser) {
+        _user = createdUser;
+      }
       return createdUser;
     } catch (e) {
       rethrow;
@@ -66,7 +86,12 @@ class NotesService {
     final db = _getDatabseOrThrow();
     await getNote(id: note.id);
 
-    final result = await db!.update(noteTable, {textColumn: text});
+    final result = await db!.update(
+      noteTable,
+      {textColumn: text},
+      where: "id = ?",
+      whereArgs: [note.id],
+    );
 
     if (result == 0) {
       throw CouldNotUpdateNoteException();
