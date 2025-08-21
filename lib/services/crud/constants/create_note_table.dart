@@ -8,4 +8,4 @@ const createNoteTable = '''
       );
       ''';
 
-const noteTable = 'note';
+const noteTable = 'notes';

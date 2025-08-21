@@ -35,6 +35,12 @@ class _ToDoViewState extends State<ToDoView> {
         title: const Text("To Do"),
         backgroundColor: Colors.amber,
         actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).pushNamed(newNoteRoute);
+            },
+            icon: const Icon(Icons.add),
+          ),
           PopupMenuButton<MenuAction>(
             onSelected: (value) async {
               switch (value) {
@@ -72,12 +78,12 @@ class _ToDoViewState extends State<ToDoView> {
                     case ConnectionState.waiting:
                       return const Text('Wainting for notes...');
                     default:
-                      return const CircularProgressIndicator();
+                      return const Center(child: CircularProgressIndicator());
                   }
                 },
               );
             default:
-              return const CircularProgressIndicator();
+              return const Center(child: CircularProgressIndicator());
           }
         },
       ),

@@ -1,4 +1,5 @@
 const loginRoute = '/login';
 const registerRoute = '/register';
 const verifyRoute = '/verify';
-const todoRoute = '/todo';
+const todoRoute = '/note';
+const newNoteRoute = '/new-note';
