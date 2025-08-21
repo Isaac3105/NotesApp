@@ -78,18 +78,27 @@ class _ToDoViewState extends State<ToDoView> {
                       if (snapshot.hasData) {
                         final allNotes = snapshot.data as List<DatabaseNote>;
                         print(allNotes.toString());
-                        return ListView.builder(
+                        return ListView.separated(
                           itemCount: allNotes.length,
+                          separatorBuilder: (context, index) =>
+                              const SizedBox(height: 8.0),
                           itemBuilder: (context, index) {
                             final note = allNotes[index];
-                            return ListTile(
-                              title: Text(
-                                note.text,
-                                maxLines: 1,
-                                softWrap: true,
-                                overflow: TextOverflow.ellipsis,
+                            return Card(
+                              margin: const EdgeInsets.symmetric(
+                                vertical: 4.0,
+                                horizontal: 8.0,
                               ),
-                              //onTap: NewNoteView(),
+                              child: ListTile(
+                                title: Text(
+                                  note.text,
+                                  maxLines: 1,
+                                  softWrap: true,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                onTap: () {},
+                                //onTap: NewNoteView(),
+                              ),
                             );
                           },
                         );
