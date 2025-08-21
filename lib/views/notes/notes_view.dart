@@ -33,7 +33,7 @@ class _ToDoViewState extends State<ToDoView> {
         actions: [
           IconButton(
             onPressed: () {
-              Navigator.of(context).pushNamed(newNoteRoute);
+              Navigator.of(context).pushNamed(createUpdateNoteRoute);
             },
             icon: const Icon(Icons.add),
           ),
@@ -42,7 +42,6 @@ class _ToDoViewState extends State<ToDoView> {
               switch (value) {
                 case MenuAction.logout:
                   final shouldLogOut = await showLogOutDialog(context);
-
                   if (shouldLogOut) {
                     await AuthService.firebase().logOut();
                     if (context.mounted) {
@@ -78,8 +77,11 @@ class _ToDoViewState extends State<ToDoView> {
                         print(allNotes.toString());
                         return NotesListView(
                           notes: allNotes,
-                          oneDeleteNote: (note) async {
+                          onDeleteNote: (note) async {
                             await _notesService.deleteNote(id: note.id);
+                          },
+                          onTap: (note) {
+                            Navigator.of(context).pushNamed(createUpdateNoteRoute,arguments: note);
                           },
                         );
                       }
