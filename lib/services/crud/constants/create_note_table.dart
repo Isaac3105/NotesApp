@@ -4,7 +4,7 @@ const createNoteTable = '''
         "user_id"	INTEGER NOT NULL,
         "text"	TEXT,
         PRIMARY KEY("id" AUTOINCREMENT),
-        FOREIGN KEY("user_id") REFERENCES ""
+        FOREIGN KEY("user_id") REFERENCES "user"("id")
       );
       ''';
 

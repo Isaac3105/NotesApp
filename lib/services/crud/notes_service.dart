@@ -74,8 +74,8 @@ class NotesService {
 
   Future<void> _cacheNotes() async {
     final allNotes = await getAllNotes();
-    final listNotes = allNotes.toList();
-    _notesStreamController.add(listNotes);
+    _notes = allNotes.toList();
+    _notesStreamController.add(_notes);
   }
 
   Future<DatabaseNote> updateNote({
@@ -96,7 +96,10 @@ class NotesService {
     if (result == 0) {
       throw CouldNotUpdateNoteException();
     }
-    return await getNote(id: note.id);
+
+    final updatedNote = await getNote(id: note.id);
+    await _cacheNotes(); // Refresh the cache
+    return updatedNote;
   }
 
   Future<List<DatabaseNote>> getAllNotes() async {
@@ -165,6 +168,7 @@ class NotesService {
 
     _notes.add(note);
     _notesStreamController.add(_notes);
+    await _cacheNotes(); // Refresh the cache
     return note;
   }
 
@@ -232,12 +236,15 @@ class NotesService {
     try {
       final docsPath = await getApplicationDocumentsDirectory();
       final dbPath = join(docsPath.path, dbName);
-      final db = await openDatabase(dbPath);
+      final db = await openDatabase(
+        dbPath,
+        version: 1,
+        onCreate: (db, version) async {
+          await db.execute(createUserTable);
+          await db.execute(createNoteTable);
+        },
+      );
       _db = db;
-
-      await db.execute(createUserTable);
-
-      await db.execute(createNoteTable);
       await _cacheNotes();
     } on MissingPlatformDirectoryException {
       throw UnableToGetDocumentsDirectory();

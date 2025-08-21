@@ -25,6 +25,12 @@ class _ToDoViewState extends State<ToDoView> {
   }
 
   @override
+  void dispose() {
+    // Don't close the database here since it's a singleton and other parts might still need it
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -81,7 +87,9 @@ class _ToDoViewState extends State<ToDoView> {
                             await _notesService.deleteNote(id: note.id);
                           },
                           onTap: (note) {
-                            Navigator.of(context).pushNamed(createUpdateNoteRoute,arguments: note);
+                            Navigator.of(
+                              context,
+                            ).pushNamed(createUpdateNoteRoute, arguments: note);
                           },
                         );
                       }
