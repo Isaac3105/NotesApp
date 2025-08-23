@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:to_do_app/services/auth/auth_service.dart';
+import 'package:to_do_app/utils/dialogs/cannot_share_empty_note_dialog.dart';
 import 'package:to_do_app/utils/generics/get_arguments.dart';
 import 'package:to_do_app/services/cloud/cloud_note.dart';
 import 'package:to_do_app/services/cloud/firebase_cloud_storage.dart';
@@ -42,7 +44,10 @@ class _NewNoteViewState extends State<CreateUpdateNoteView> {
   void _saveNoteIfNotEmpty() async {
     final note = _note;
     if (note != null && _textController.text.isNotEmpty) {
-      await _notesService.updateNote(documentId: note.documentId, text: _textController.text);
+      await _notesService.updateNote(
+        documentId: note.documentId,
+        text: _textController.text,
+      );
     }
   }
 
@@ -85,6 +90,19 @@ class _NewNoteViewState extends State<CreateUpdateNoteView> {
       appBar: AppBar(
         title: Text(widgetNote == null ? "New Note" : "Edit Note"),
         backgroundColor: Colors.amber,
+        actions: [
+          IconButton(
+            onPressed: () async {
+              final text = _textController.text;
+              if (_note == null || text.isEmpty) {
+                await showCannotShareEmptyNoteDialog(context);
+              } else {
+                SharePlus.instance.share(ShareParams(text: text));
+              }
+            },
+            icon: Icon(Icons.share),
+          ),
+        ],
       ),
       body: FutureBuilder(
         future: createOrGetExistingNote(context),

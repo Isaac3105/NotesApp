@@ -1,1 +1,0 @@
-const dbName = 'notes.db';
