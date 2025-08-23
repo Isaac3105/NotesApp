@@ -16,7 +16,7 @@ class ToDoView extends StatefulWidget {
 
 class _ToDoViewState extends State<ToDoView> {
   late final NotesService _notesService;
-  String get userEmail => AuthService.firebase().currentUser!.email!;
+  String get userEmail => AuthService.firebase().currentUser!.email;
 
   @override
   void initState() {
