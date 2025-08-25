@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:to_do_app/constants/routes.dart';
 import 'package:to_do_app/enums/menu_actions.dart';
 import 'package:to_do_app/services/auth/auth_service.dart';
+import 'package:to_do_app/services/auth/bloc/auth_bloc.dart';
+import 'package:to_do_app/services/auth/bloc/auth_event.dart';
 import 'package:to_do_app/services/cloud/cloud_note.dart';
 import 'package:to_do_app/services/cloud/firebase_cloud_storage.dart';
 import 'package:to_do_app/utils/dialogs/log_out_dialog.dart';
@@ -16,7 +19,7 @@ class ToDoView extends StatefulWidget {
 
 class _ToDoViewState extends State<ToDoView> {
   late final FirebaseCloudStorage _notesService;
-  String get userId => AuthService.firebase().currentUser!.uid; 
+  String get userId => AuthService.firebase().currentUser!.uid;
 
   @override
   void initState() {
@@ -49,11 +52,8 @@ class _ToDoViewState extends State<ToDoView> {
                 case MenuAction.logout:
                   final shouldLogOut = await showLogOutDialog(context);
                   if (shouldLogOut) {
-                    await AuthService.firebase().logOut();
                     if (context.mounted) {
-                      Navigator.of(
-                        context,
-                      ).pushNamedAndRemoveUntil(loginRoute, (_) => false);
+                      context.read<AuthBloc>().add(AuthEventLogOut());
                     }
                   }
                   break;
@@ -93,7 +93,7 @@ class _ToDoViewState extends State<ToDoView> {
               return const Center(child: CircularProgressIndicator());
           }
         },
-      )
+      ),
     );
   }
 }
