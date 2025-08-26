@@ -4,32 +4,33 @@ import 'package:equatable/equatable.dart';
 
 @immutable
 abstract class AuthState {
-  const AuthState();
+  final bool isLoading;
+  final String loadingText;
+  const AuthState({required this.isLoading, this.loadingText = "Please wait a moment"});
 }
 
 class AuthStateOnInitialize extends AuthState {
-  const AuthStateOnInitialize();
+  const AuthStateOnInitialize({required super.isLoading});
 }
 
 class AuthStateRegistering extends AuthState {
   final Exception? exception;
-  const AuthStateRegistering({required this.exception});
+  const AuthStateRegistering({required super.isLoading, required this.exception});
 }
 
 class AuthStateLoggedIn extends AuthState {
   final AuthUser user;
-  const AuthStateLoggedIn({required this.user});
+  const AuthStateLoggedIn({required super.isLoading, required this.user});
 }
 
 class AuthStateNeedsVerification extends AuthState {
-  const AuthStateNeedsVerification();
+  const AuthStateNeedsVerification({required super.isLoading});
 }
 
 class AuthStateLoggedOut extends AuthState with EquatableMixin{
-  final Exception? exeption;
-  final bool isLoading;
-  const AuthStateLoggedOut({required this.exeption, required this.isLoading});
+  final Exception? exception;
+  const AuthStateLoggedOut({required this.exception, required super.isLoading, super.loadingText});
   
   @override
-  List<Object?> get props => [exeption,isLoading];
+  List<Object?> get props => [exception,isLoading];
 }
