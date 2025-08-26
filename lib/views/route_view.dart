@@ -5,6 +5,7 @@ import 'package:to_do_app/services/auth/bloc/auth_event.dart';
 import 'package:to_do_app/services/auth/bloc/auth_state.dart';
 import 'package:to_do_app/views/login_view.dart';
 import 'package:to_do_app/views/notes/notes_view.dart';
+import 'package:to_do_app/views/register_view.dart';
 import 'verify_email_view.dart';
 
 class RouteView extends StatelessWidget {
@@ -21,6 +22,8 @@ class RouteView extends StatelessWidget {
           return const LoginView();
         } else if (state is AuthStateNeedsVerification) {
           return const VerifyEmailView();
+        } else if (state is AuthStateRegistering) {
+          return const RegisterView();
         } else {
           return const Scaffold(
             body: Center(child: CircularProgressIndicator()), backgroundColor: Colors.black,

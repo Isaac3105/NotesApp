@@ -5,11 +5,7 @@ import 'package:to_do_app/constants/routes.dart';
 import 'package:to_do_app/services/auth/auth_service.dart';
 import 'package:to_do_app/services/auth/bloc/auth_bloc.dart';
 import 'package:to_do_app/services/auth/firebase_auth_provider.dart';
-import 'package:to_do_app/views/login_view.dart';
 import 'package:to_do_app/views/notes/create_update_note_view.dart';
-import 'package:to_do_app/views/register_view.dart';
-import 'package:to_do_app/views/verify_email_view.dart';
-import 'package:to_do_app/views/notes/notes_view.dart';
 import 'views/route_view.dart';
 
 Future<void> main() async {
@@ -28,10 +24,6 @@ Future<void> main() async {
       ),
       routes: {
         createUpdateNoteRoute: (context) => const CreateUpdateNoteView(),
-        loginRoute: (context) => const LoginView(),
-        registerRoute: (context) => const RegisterView(),
-        verifyRoute: (context) => const VerifyEmailView(),
-        todoRoute: (context) => const ToDoView(),
       },
     ),
   );

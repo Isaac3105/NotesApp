@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:to_do_app/constants/routes.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:to_do_app/services/auth/auth_exceptions.dart';
-import 'package:to_do_app/services/auth/auth_service.dart';
+import 'package:to_do_app/services/auth/bloc/auth_bloc.dart';
+import 'package:to_do_app/services/auth/bloc/auth_event.dart';
+import 'package:to_do_app/services/auth/bloc/auth_state.dart';
 import 'package:to_do_app/utils/dialogs/error_dialog.dart';
 
 class RegisterView extends StatefulWidget {
@@ -32,87 +34,61 @@ class _RegisterViewState extends State<RegisterView> {
 
   @override
   Widget build(BuildContext context) {
-    void registerFirebase() async {
-      final email = _email.text;
-      final password = _password.text;
-      try {
-        await AuthService.firebase().createUser(
-          email: email,
-          password: password,
-        );
-        if (context.mounted) {
-          await AuthService.firebase().sendEmailVerification();
-          if (context.mounted) Navigator.of(context).pushNamed(verifyRoute);
+    return BlocListener<AuthBloc, AuthState>(
+      listener: (context, state) async {
+        if( state is AuthStateRegistering){
+          if(state.exception is WeakPasswordAuthException){
+            await showErrorDialog(context, 'The password provided is too weak.');
+          } else if(state.exception is InvalidEmailAuthException){
+            await showErrorDialog(context, 'The email provided is invalid.');
+          } else if(state.exception is EmailAlreadyInUseAuthException){
+            await showErrorDialog(context, 'An account already exists for that email.');
+          } else if(state.exception is GenericAuthException){
+            await showErrorDialog(context, 'Failed to register');
+          }
         }
-      } on InvalidEmailAuthException catch (_) {
-        if (context.mounted) {
-          await showErrorDialog(
-            context,
-            'The email provided is invalid.',
-          );
-        }
-      } on WeakPasswordAuthException catch (_) {
-        if (context.mounted) {
-          await showErrorDialog(
-            context,
-            'The password provided is too weak.',
-          );
-        }
-      } on EmailAlreadyInUseAuthException catch (_) {
-        if (context.mounted) {
-          await showErrorDialog(
-            context,
-            'An account already exists for that email.',
-          );
-        }
-      } on GenericAuthException catch (_) {
-        if (context.mounted) {
-          await showErrorDialog(
-            context,
-            'Authentication error',
-          );
-        }
-      }
-    }
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Register"),
-        backgroundColor: Colors.amber,
-      ),
-      body: Column(
-        children: [
-          TextField(
-            decoration: const InputDecoration(
-              hintText: 'Enter your email here',
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text("Register"),
+          backgroundColor: Colors.amber,
+        ),
+        body: Column(
+          children: [
+            TextField(
+              decoration: const InputDecoration(
+                hintText: 'Enter your email here',
+              ),
+              controller: _email,
+              autocorrect: false,
+              enableSuggestions: false,
+              keyboardType: TextInputType.emailAddress,
             ),
-            controller: _email,
-            autocorrect: false,
-            enableSuggestions: false,
-            keyboardType: TextInputType.emailAddress,
-          ),
-          TextField(
-            decoration: const InputDecoration(
-              hintText: 'Enter your password here',
+            TextField(
+              decoration: const InputDecoration(
+                hintText: 'Enter your password here',
+              ),
+              controller: _password,
+              obscureText: true,
+              autocorrect: false,
+              enableSuggestions: false,
             ),
-            controller: _password,
-            obscureText: true,
-            autocorrect: false,
-            enableSuggestions: false,
-          ),
-          TextButton(
-            onPressed: registerFirebase,
-            child: const Text("Register"),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.of(
-                context,
-              ).pushNamedAndRemoveUntil(loginRoute, (context) => false);
-            },
-            child: const Text("Registered? Go to Login!"),
-          ),
-        ],
+            TextButton(
+              onPressed: () async {
+                final email = _email.text;
+                final password = _password.text;
+                context.read<AuthBloc>().add(AuthEventRegister(email, password,));
+              },
+              child: const Text("Register"),
+            ),
+            TextButton(
+              onPressed: () {
+                context.read<AuthBloc>().add(const AuthEventLogOut());
+              },
+              child: const Text("Registered? Go to Login!"),
+            ),
+          ],
+        ),
       ),
     );
   }
