@@ -129,4 +129,12 @@ class MockAuthProvider implements AuthProvider {
     final newUser =  AuthUser(email: user.email, isEmailVerified: true, uid: "placeholder");
     _user = newUser;
   }
+  
+  @override
+  Future<void> sendPasswordReset({required String email}) async {
+    if (!isInitialized) throw NotInitializedException();
+    if(email == "foobarbaz@gmail.com") throw UserNotFoundAuthException();
+    await Future.delayed(Duration(seconds: 1));
+    await createUser(email: email, password: "new password");
+  }
 }

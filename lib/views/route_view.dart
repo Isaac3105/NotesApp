@@ -4,6 +4,7 @@ import 'package:to_do_app/helpers/loading/loading_screen.dart';
 import 'package:to_do_app/services/auth/bloc/auth_bloc.dart';
 import 'package:to_do_app/services/auth/bloc/auth_event.dart';
 import 'package:to_do_app/services/auth/bloc/auth_state.dart';
+import 'package:to_do_app/views/forgot_password_view.dart';
 import 'package:to_do_app/views/login_view.dart';
 import 'package:to_do_app/views/notes/notes_view.dart';
 import 'package:to_do_app/views/register_view.dart';
@@ -28,6 +29,8 @@ class RouteView extends StatelessWidget {
           return const ToDoView();
         } else if (state is AuthStateLoggedOut) {
           return const LoginView();
+        } else if (state is AuthStateForgotPassword) {
+          return const ForgotPasswordView();
         } else if (state is AuthStateNeedsVerification) {
           return const VerifyEmailView();
         } else if (state is AuthStateRegistering) {

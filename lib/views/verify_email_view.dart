@@ -26,7 +26,7 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
               "We've already sent a email verification to your account.",
             ),
             const Text(
-              "If you haven't received a verification email, please pres the button below:",
+              "If you haven't received a verification email, please press the button below:",
             ),
             TextButton(
               onPressed: () {
@@ -41,7 +41,7 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
                   context.read<AuthBloc>().add(const AuthEventLogOut());
                 }
               },
-              child: const Text("Restart"),
+              child: const Text("Go back"),
             ),
           ],
         ),
