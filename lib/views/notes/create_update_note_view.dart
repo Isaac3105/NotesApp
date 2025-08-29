@@ -17,11 +17,13 @@ class _NewNoteViewState extends State<CreateUpdateNoteView> {
   CloudNote? _note;
   late final FirebaseCloudStorage _notesService;
   late final TextEditingController _textController;
+  late final TextEditingController _titleController;
 
   @override
   void initState() {
     _notesService = FirebaseCloudStorage();
     _textController = TextEditingController();
+    _titleController = TextEditingController();
     super.initState();
   }
 
@@ -30,12 +32,13 @@ class _NewNoteViewState extends State<CreateUpdateNoteView> {
     _deleteNoteIfEmpty();
     _saveNoteIfNotEmpty();
     _textController.dispose();
+    _titleController.dispose();
     super.dispose();
   }
 
   void _deleteNoteIfEmpty() {
     final note = _note;
-    if (note != null && _textController.text.isEmpty) {
+    if (note != null && _textController.text.isEmpty && _titleController.text.isEmpty) {
       _notesService.deleteNote(documentId: note.documentId);
       _note = null;
     }
@@ -43,8 +46,9 @@ class _NewNoteViewState extends State<CreateUpdateNoteView> {
 
   void _saveNoteIfNotEmpty() async {
     final note = _note;
-    if (note != null && _textController.text.isNotEmpty) {
+    if (note != null && (_textController.text.isNotEmpty || _titleController.text.isNotEmpty)) {
       await _notesService.updateNote(
+        title: _titleController.text,
         documentId: note.documentId,
         text: _textController.text,
       );
@@ -55,13 +59,16 @@ class _NewNoteViewState extends State<CreateUpdateNoteView> {
     final note = _note;
     if (note != null) {
       final text = _textController.text;
-      await _notesService.updateNote(documentId: note.documentId, text: text);
+      final title = _titleController.text;
+      await _notesService.updateNote(documentId: note.documentId, text: text, title: title);
     }
   }
 
-  void _setupTextControllerListener() {
+  void _setupTextAndTitleControllerListener() {
     _textController.removeListener(_textControllerListener);
     _textController.addListener(_textControllerListener);
+    _titleController.removeListener(_textControllerListener);
+    _titleController.addListener(_textControllerListener);
   }
 
   Future<CloudNote> createOrGetExistingNote(BuildContext context) async {
@@ -79,6 +86,7 @@ class _NewNoteViewState extends State<CreateUpdateNoteView> {
     } else {
       _note = widgetNote;
       _textController.text = widgetNote.text;
+      _titleController.text = widgetNote.title;
       return widgetNote;
     }
   }
@@ -109,14 +117,28 @@ class _NewNoteViewState extends State<CreateUpdateNoteView> {
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.done:
-              _setupTextControllerListener();
-              return TextField(
-                controller: _textController,
-                autocorrect: true,
-                keyboardType: TextInputType.multiline,
-                maxLines: null,
-                decoration: InputDecoration(
-                  hintText: "Start typing your note :)",
+              _setupTextAndTitleControllerListener();
+              return SingleChildScrollView(
+                child: Column(
+                  children: [
+                    TextField(
+                      controller: _titleController,
+                      autocorrect: true,
+                      keyboardType: TextInputType.text,
+                      decoration: InputDecoration(
+                        hintText: "Note Title",
+                      ),
+                    ),
+                    TextField(
+                      controller: _textController,
+                      autocorrect: true,
+                      keyboardType: TextInputType.multiline,
+                      maxLines: null,
+                      decoration: InputDecoration(
+                        hintText: "Start typing your note :)",
+                      ),
+                    ),
+                  ],
                 ),
               );
             default:

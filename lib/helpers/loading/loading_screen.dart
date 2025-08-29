@@ -30,9 +30,9 @@ class LoadingScreen {
     required BuildContext context,
     required String text,
   }) {
-    final _text = StreamController<String>(); 
+    final textStream = StreamController<String>(); 
 
-    _text.add(text);
+    textStream.add(text);
 
     final state = Overlay.of(context);
     final renderBox = context.findRenderObject() as RenderBox;
@@ -62,7 +62,7 @@ class LoadingScreen {
                     const SizedBox(height: 10),
                     const CircularProgressIndicator(),
                     const SizedBox(height: 20,),
-                    StreamBuilder(stream: _text.stream, builder: (context,snapshot){
+                    StreamBuilder(stream: textStream.stream, builder: (context,snapshot){
                       if(snapshot.hasData){
                         return Text(
                           snapshot.data as String,
@@ -85,12 +85,12 @@ class LoadingScreen {
 
     return LoadingScreenController(
       close: () {
-        _text.close();
+        textStream.close();
         overlay.remove();
         return true;
       }, 
       update: (text) {
-        _text.add(text);
+        textStream.add(text);
         return true;
       },
     );

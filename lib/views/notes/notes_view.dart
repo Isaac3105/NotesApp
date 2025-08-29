@@ -29,7 +29,6 @@ class _ToDoViewState extends State<ToDoView> {
 
   @override
   void dispose() {
-    // Don't close the database here since it's a singleton and other parts might still need it
     super.dispose();
   }
 
@@ -37,7 +36,7 @@ class _ToDoViewState extends State<ToDoView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("To Do"),
+        title: const Text("My Notes"),
         backgroundColor: Colors.amber,
         actions: [
           IconButton(
@@ -75,7 +74,6 @@ class _ToDoViewState extends State<ToDoView> {
             case ConnectionState.active:
               if (snapshot.hasData) {
                 final allNotes = snapshot.data as Iterable<CloudNote>;
-                print(allNotes.toString());
                 return NotesListView(
                   notes: allNotes,
                   onDeleteNote: (note) async {

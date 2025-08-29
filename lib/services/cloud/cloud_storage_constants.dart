@@ -1,2 +1,4 @@
 const ownerUserIdFieldName = "user_id";
-const textFieldName = "text";
+const textField = "text";
+const timestampField = "timestamp";
+const titleField = "title";

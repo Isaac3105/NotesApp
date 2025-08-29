@@ -7,30 +7,42 @@ class FirebaseCloudStorage {
   final notes = FirebaseFirestore.instance.collection("notes");
 
   Future<CloudNote> createNewNote({required String ownerUserId}) async {
-    final document = await notes.add({
-      ownerUserIdFieldName: ownerUserId,
-      textFieldName: "",
-    });
-    final fetchedNote = await document.get();
-    return CloudNote(
-      documentId: fetchedNote.id,
-      ownerUserId: ownerUserId,
-      text: "",
-    );
+    try {
+      final timestamp = Timestamp.now();
+      final document = await notes.add({
+        titleField: "",
+        ownerUserIdFieldName: ownerUserId,
+        textField: "",
+        timestampField: timestamp,
+      });
+      final fetchedNote = await document.get();
+      return CloudNote(
+        documentId: fetchedNote.id,
+        ownerUserId: ownerUserId,
+        text: "", 
+        timestamp: timestamp, 
+        title: "",
+      );
+    } catch (e) {
+      throw CouldNotCreateNoteException();
+    }
   }
 
   Stream<Iterable<CloudNote>> allNotes({required String ownerUserId}) {
-    final allNotes = notes.where(ownerUserIdFieldName, isEqualTo: ownerUserId).snapshots().map(
-        (event) => event.docs.map((doc) => CloudNote.fromSnapshot(doc)));
+    final allNotes = notes.where(ownerUserIdFieldName, isEqualTo: ownerUserId)
+        .orderBy(timestampField, descending: true)
+        .snapshots()
+        .map((event) => event.docs.map((doc) => CloudNote.fromSnapshot(doc)));
     return allNotes;
   }
 
   Future<void> updateNote({
     required String documentId,
     required String text,
+    required String title,
   }) async {
     try {
-      await notes.doc(documentId).update({textFieldName: text});
+      await notes.doc(documentId).update({textField: text, titleField: title});
     } catch (e) {
       throw CouldNotUpdateNoteException();
     }

@@ -18,22 +18,21 @@ class NotesListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.separated(
+    return ListView.builder(
       itemCount: notes.length,
-      separatorBuilder: (context, index) => const SizedBox(height: 8.0),
       itemBuilder: (context, index) {
         final note = notes.elementAt(index);
-        if (note.text.isEmpty) {
+        if (note.text.isEmpty && note.title.isEmpty) {
           return const SizedBox.shrink();
         }
         return Card(
-          margin: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
+          margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
           child: ListTile(
             onTap: () {
               onTap(note);
             },
             title: Text(
-              note.text,
+              note.title == "" ? note.text : note.title,
               maxLines: 1,
               softWrap: true,
               overflow: TextOverflow.ellipsis,
