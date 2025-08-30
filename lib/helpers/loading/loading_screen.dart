@@ -31,7 +31,6 @@ class LoadingScreen {
     required String text,
   }) {
     final textStream = StreamController<String>(); 
-
     textStream.add(text);
 
     final state = Overlay.of(context);
@@ -40,40 +39,82 @@ class LoadingScreen {
 
     final overlay = OverlayEntry(builder: (context){
       return Material(
-        color: Colors.black.withAlpha(150),
+        color: Colors.black.withAlpha(180),
         child: Center(
           child: Container(
             constraints: BoxConstraints(
-              maxWidth: size.width * 0.8,
-              maxHeight: size.height * 0.8,
-              minWidth: size.width * 0.5,
+              maxWidth: size.width * 0.85,
+              maxHeight: size.height * 0.3,
+              minWidth: size.width * 0.6,
             ),
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(10)
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withAlpha(50),
+                  blurRadius: 20,
+                  spreadRadius: 5,
+                  offset: const Offset(0, 10),
+                ),
+              ],
             ),
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const SizedBox(height: 10),
-                    const CircularProgressIndicator(),
-                    const SizedBox(height: 20,),
-                    StreamBuilder(stream: textStream.stream, builder: (context,snapshot){
-                      if(snapshot.hasData){
-                        return Text(
-                          snapshot.data as String,
-                          textAlign: TextAlign.center,
+              padding: const EdgeInsets.all(32.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.amber.shade50,
+                      shape: BoxShape.circle,
+                    ),
+                    child: const SizedBox(
+                      width: 40,
+                      height: 40,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 3,
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.amber),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  
+                  StreamBuilder(
+                    stream: textStream.stream, 
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return Column(
+                          children: [
+                            Text(
+                              snapshot.data as String,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black87,
+                                height: 1.4,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              "Please wait...",
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey[600],
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ],
                         );
                       } else {
-                        return Container();
+                        return const SizedBox.shrink();
                       }
-                    })
-                  ],
-                ),
+                    }
+                  ),
+                ],
               ),
             ),
           ),

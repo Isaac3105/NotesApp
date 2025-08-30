@@ -49,59 +49,100 @@ class _RegisterViewState extends State<RegisterView> {
         }
       },
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text("Register"),
-          backgroundColor: Colors.amber,
-        ),
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text("Create your account with an email and password"),
-              TextField(
-                decoration: const InputDecoration(
-                  hintText: 'Enter your email here',
+        body:SafeArea( 
+          child: Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(24.0),
+              child: Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(32.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: Colors.amber.shade50,
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.note_alt,
+                          size: 64,
+                          color: Colors.amber,
+                        ),
+                      ),
+
+                      const SizedBox(height: 24),
+                      
+                      Text(
+                        "Greetings!",
+                        style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey[800],
+                        ),
+                      ),
+                      
+                      const SizedBox(height: 8),
+
+                      Text(
+                        "Create your account with an email and password",
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Colors.grey[600],
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 32),
+
+                      TextField(
+                        decoration: const InputDecoration(
+                          labelText: 'Email',
+                          hintText: 'Enter your email',
+                          prefixIcon: Icon(Icons.email_outlined),
+                        ),
+                        controller: _email,
+                        autocorrect: false,
+                        enableSuggestions: false,
+                        keyboardType: TextInputType.emailAddress,
+                      ),
+                      const SizedBox(height: 16),
+
+                      TextField(
+                        decoration: const InputDecoration(
+                          labelText: 'Password',
+                          hintText: 'Enter your password',
+                          prefixIcon: Icon(Icons.lock_outlined),
+                        ),
+                        controller: _password,
+                        obscureText: true,
+                        autocorrect: false,
+                        enableSuggestions: false,
+                      ),
+                      const SizedBox(height: 24),
+                      
+                      ElevatedButton(
+                        onPressed: () async {
+                          final email = _email.text;
+                          final password = _password.text;
+                          context.read<AuthBloc>().add(AuthEventRegister(email, password,));
+                        },
+                        child: const Text("Register"),
+                      ),
+                      const SizedBox(height: 16),
+                      
+                      TextButton(
+                        onPressed: () {
+                          context.read<AuthBloc>().add(const AuthEventLogOut());
+                        },
+                        child: const Text("Registered? Go to Login!"),
+                      ),
+                    ],
+                  ),
                 ),
-                controller: _email,
-                autocorrect: false,
-                autofocus: true,
-                enableSuggestions: false,
-                keyboardType: TextInputType.emailAddress,
               ),
-              TextField(
-                decoration: const InputDecoration(
-                  hintText: 'Enter your password here',
-                ),
-                controller: _password,
-                obscureText: true,
-                autocorrect: false,
-                enableSuggestions: false,
-              ),
-              Center(
-                child: Column(
-                  children: [
-                    TextButton(
-                      onPressed: () async {
-                        final email = _email.text;
-                        final password = _password.text;
-                        context.read<AuthBloc>().add(AuthEventRegister(email, password,));
-                      },
-                      child: const Text("Register"),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        context.read<AuthBloc>().add(const AuthEventLogOut());
-                      },
-                      child: const Text("Registered? Go to Login!"),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+            ),
+          )
+        )
+      )
     );
   }
 }
