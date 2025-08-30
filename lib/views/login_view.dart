@@ -16,7 +16,7 @@ class LoginView extends StatefulWidget {
 class _LoginViewState extends State<LoginView> {
   late final TextEditingController _email;
   late final TextEditingController _password;
-
+  bool passwordHidden = true;
   @override
   void initState() {
     _email = TextEditingController();
@@ -111,13 +111,21 @@ class _LoginViewState extends State<LoginView> {
                         const SizedBox(height: 16),
                         
                         TextField(
-                          decoration: const InputDecoration(
+                          decoration: InputDecoration(
                             labelText: 'Password',
                             hintText: 'Enter your password',
                             prefixIcon: Icon(Icons.lock_outlined),
+                            suffixIcon: IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  passwordHidden = !passwordHidden;
+                                });
+                              }, 
+                              icon: Icon(passwordHidden? Icons.visibility : Icons.visibility_off),
+                            )
                           ),
                           controller: _password,
-                          obscureText: true,
+                          obscureText: passwordHidden,
                           autocorrect: false,
                           enableSuggestions: false,
                         ),
