@@ -37,7 +37,6 @@ class _ToDoViewState extends State<ToDoView> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("My Notes"),
-        backgroundColor: Colors.amber,
         actions: [
           IconButton(
             onPressed: () {
@@ -52,7 +51,7 @@ class _ToDoViewState extends State<ToDoView> {
                   final shouldLogOut = await showLogOutDialog(context);
                   if (shouldLogOut) {
                     if (context.mounted) {
-                      context.read<AuthBloc>().add(AuthEventLogOut());
+                      context.read<AuthBloc>().add(const AuthEventLogOut());
                     }
                   }
                   break;

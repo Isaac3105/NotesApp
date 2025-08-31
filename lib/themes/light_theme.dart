@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 ThemeData buildLightTheme() {
@@ -85,6 +86,11 @@ ThemeData buildLightTheme() {
       foregroundColor: Colors.white,
       elevation: 0,
       centerTitle: true,
+      systemOverlayStyle: const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.light, // Light icons on amber background
+        statusBarBrightness: Brightness.dark, // For iOS
+      ),
       titleTextStyle: GoogleFonts.poppins(
         fontSize: 20,
         fontWeight: FontWeight.bold,
