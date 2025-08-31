@@ -51,6 +51,25 @@ class FirebaseCloudStorage {
     return allNotes;
   }
 
+  Stream<Iterable<CloudNote>> searchNotes({
+    required String ownerUserId,
+    required String searchQuery,
+    NoteSortOption sortBy = NoteSortOption.updatedAt,
+  }) {
+    if (searchQuery.isEmpty) {
+      return allNotes(ownerUserId: ownerUserId, sortBy: sortBy);
+    }
+
+    return allNotes(ownerUserId: ownerUserId, sortBy: sortBy).map((notes) {
+      final query = searchQuery.toLowerCase();
+      return notes.where((note) {
+        final titleMatch = note.title.toLowerCase().contains(query);
+        final textMatch = note.text.toLowerCase().contains(query);
+        return titleMatch || textMatch;
+      });
+    });
+  }
+
   Future<void> updateNote({
     required String documentId,
     required String text,

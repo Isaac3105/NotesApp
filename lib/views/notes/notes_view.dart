@@ -19,16 +19,22 @@ class ToDoView extends StatefulWidget {
 
 class _ToDoViewState extends State<ToDoView> {
   late final FirebaseCloudStorage _notesService;
+  late final TextEditingController _searchController;
+  String _searchQuery = "";
+  bool _isSearching = false;
+  
   String get userId => AuthService.firebase().currentUser!.uid;
 
   @override
   void initState() {
     _notesService = FirebaseCloudStorage();
+    _searchController = TextEditingController();
     super.initState();
   }
 
   @override
   void dispose() {
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -36,41 +42,84 @@ class _ToDoViewState extends State<ToDoView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("My Notes"),
-        actions: [
-          PopupMenuButton<MenuAction>(
-            icon: const Icon(Icons.more_vert),
-            onSelected: (value) async {
-              switch (value) {
-                case MenuAction.logout:
-                  final shouldLogOut = await showLogOutDialog(context);
-                  if (shouldLogOut) {
-                    if (context.mounted) {
-                      context.read<AuthBloc>().add(const AuthEventLogOut());
-                    }
-                  }
-                  break;
-              }
-            },
-            itemBuilder: (context) {
-              return [
-                PopupMenuItem(
-                  value: MenuAction.logout,
-                  child: Row(
-                    children: [
-                      Icon(Icons.logout, size: 20, color: Theme.of(context).iconTheme.color,),
-                      SizedBox(width: 12),
-                      Text("Logout"),
-                    ],
-                  ),
+        title: _isSearching 
+            ? TextField(
+                controller: _searchController,
+                autofocus: true,
+                decoration: InputDecoration(
+                  hintText: "Search notes...",
+                  border: InputBorder.none,
+                  hintStyle: TextStyle(color: Theme.of(context).textTheme.bodyMedium!.color),
                 ),
-              ];
-            },
-          ),
+                style: TextStyle(color: Theme.of(context).textTheme.bodyMedium!.color, fontSize: 18),
+                onChanged: (value) {
+                  setState(() {
+                    _searchQuery = value;
+                  });
+                },
+              )
+            : const Text("My Notes"),
+        actions: [
+          if (_isSearching) ...[
+            IconButton(
+              icon: const Icon(Icons.clear),
+              onPressed: () {
+                setState(() {
+                  _isSearching = false;
+                  _searchQuery = "";
+                  _searchController.clear();
+                });
+              },
+            ),
+          ] else ...[
+            IconButton(
+              icon: const Icon(Icons.search),
+              onPressed: () {
+                setState(() {
+                  _isSearching = true;
+                });
+              },
+            ),
+            PopupMenuButton<MenuAction>(
+              icon: const Icon(Icons.more_vert),
+              onSelected: (value) async {
+                switch (value) {
+                  case MenuAction.logout:
+                    final shouldLogOut = await showLogOutDialog(context);
+                    if (shouldLogOut) {
+                      if (context.mounted) {
+                        context.read<AuthBloc>().add(const AuthEventLogOut());
+                      }
+                    }
+                    break;
+                }
+              },
+              itemBuilder: (context) {
+                return [
+                  PopupMenuItem(
+                    value: MenuAction.logout,
+                    child: Row(
+                      children: [
+                        Icon(Icons.logout, size: 20, color: Theme.of(context).iconTheme.color,),
+                        const SizedBox(width: 12),
+                        const Text("Logout"),
+                      ],
+                    ),
+                  ),
+                ];
+              },
+            ),
+          ],
         ],
       ),
       body: StreamBuilder(
-        stream: _notesService.allNotes(ownerUserId: userId, sortBy: NoteSortOption.updatedAt),
+        stream: _isSearching && _searchQuery.isNotEmpty
+            ? _notesService.searchNotes(
+                ownerUserId: userId, 
+                searchQuery: _searchQuery,
+                sortBy: NoteSortOption.updatedAt,
+              )
+            : _notesService.allNotes(ownerUserId: userId, sortBy: NoteSortOption.updatedAt),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.waiting:
@@ -83,7 +132,9 @@ class _ToDoViewState extends State<ToDoView> {
                 ).toList();
                 
                 if (validNotes.isEmpty) {
-                  return _buildEmptyState();
+                  return _isSearching && _searchQuery.isNotEmpty 
+                      ? _buildNoSearchResults()
+                      : _buildEmptyState();
                 }
                 return NotesListView(
                   notes: validNotes,
@@ -109,7 +160,7 @@ class _ToDoViewState extends State<ToDoView> {
           Navigator.of(context).pushNamed(createUpdateNoteRoute);
         },
         backgroundColor: Colors.amber,
-        foregroundColor: Colors.white,
+        foregroundColor: Theme.of(context).appBarTheme.foregroundColor,
         icon: const Icon(Icons.add, size: 24),
         label: const Text(
           "New Note",
@@ -153,8 +204,49 @@ class _ToDoViewState extends State<ToDoView> {
   }
 
   Widget _buildEmptyState() {
+    return Align(
+      alignment: const Alignment(0, -0.6),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: Colors.amber.shade50,
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(
+              Icons.note_add_outlined,
+              size: 64,
+              color: Colors.amber,
+            ),
+          ),
+          const SizedBox(height: 24),
+          Text(
+            "No Notes Yet",
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: Colors.grey[700],
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            "Tap the + button to create your first note",
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.grey[600],
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNoSearchResults() {
     return Padding(
-      padding: const EdgeInsets.all(0),
+      padding: const EdgeInsets.all(24),
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -162,18 +254,18 @@ class _ToDoViewState extends State<ToDoView> {
             Container(
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
-                color: Colors.amber.shade50,
+                color: Colors.grey.shade100,
                 shape: BoxShape.circle,
               ),
-              child: const Icon(
-                Icons.note_add_outlined,
+              child: Icon(
+                Icons.search_off,
                 size: 64,
-                color: Colors.amber,
+                color: Colors.grey[600],
               ),
             ),
             const SizedBox(height: 24),
             Text(
-              "No Notes Yet",
+              "No Results Found",
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -182,12 +274,29 @@ class _ToDoViewState extends State<ToDoView> {
             ),
             const SizedBox(height: 8),
             Text(
-              "Tap the + button to create your first note",
+              'No notes match "$_searchQuery"',
               style: TextStyle(
                 fontSize: 16,
                 color: Colors.grey[600],
               ),
               textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  _isSearching = false;
+                  _searchQuery = "";
+                  _searchController.clear();
+                });
+              },
+              child: const Text(
+                "Clear Search",
+                style: TextStyle(
+                  color: Colors.amber,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
             ),
           ],
         ),

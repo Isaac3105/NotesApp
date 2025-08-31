@@ -50,6 +50,7 @@ class NotesListView extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: Colors.amber.shade100,
                       borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.amber, width: 1.5)
                     ),
                     child: const Icon(
                       Icons.note_outlined,
@@ -61,18 +62,18 @@ class NotesListView extends StatelessWidget {
                   Expanded(
                     child: Text(
                       note.title.isEmpty ? "Untitled Note" : note.title,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: Colors.black87,
+                        color: Theme.of(context).textTheme.bodyMedium!.color,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
                   Container(
-                    width: 35, // Use fixed width instead of maxWidth
-                    height: 35, // Use fixed height instead of maxHeight
+                    width: 35, 
+                    height: 35, 
                     decoration: BoxDecoration(
                       color: Colors.red.shade50,
                       borderRadius: BorderRadius.circular(8),

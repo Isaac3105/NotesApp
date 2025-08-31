@@ -107,8 +107,8 @@ ThemeData buildDarkTheme() {
       centerTitle: true,
       systemOverlayStyle: const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.light, // Light icons on amber background
-        statusBarBrightness: Brightness.dark, // For iOS
+        statusBarIconBrightness: Brightness.light,
+        statusBarBrightness: Brightness.dark,
       ),
       titleTextStyle: GoogleFonts.poppins(
         fontSize: 20,
