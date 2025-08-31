@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:to_do_app/helpers/loading/loading_screen_controller.dart';
 
@@ -36,10 +35,14 @@ class LoadingScreen {
     final state = Overlay.of(context);
     final renderBox = context.findRenderObject() as RenderBox;
     final size = renderBox.size;
+    
+    // Get theme-aware colors
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
     final overlay = OverlayEntry(builder: (context){
       return Material(
-        color: Colors.black.withAlpha(180),
+        color: Colors.black.withAlpha(isDark ? 220 : 180), // Darker overlay for dark theme
         child: Center(
           child: Container(
             constraints: BoxConstraints(
@@ -48,11 +51,11 @@ class LoadingScreen {
               minWidth: size.width * 0.6,
             ),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: theme.cardTheme.color ?? (isDark ? Colors.grey[850] : Colors.white),
               borderRadius: BorderRadius.circular(20),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withAlpha(50),
+                  color: isDark ? Colors.black.withAlpha(100) : Colors.black.withAlpha(50),
                   blurRadius: 20,
                   spreadRadius: 5,
                   offset: const Offset(0, 10),
@@ -68,7 +71,9 @@ class LoadingScreen {
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: Colors.amber.shade50,
+                      color: isDark 
+                          ? Colors.amber.withAlpha(30) 
+                          : Colors.amber.shade50,
                       shape: BoxShape.circle,
                     ),
                     child: const SizedBox(
@@ -91,19 +96,16 @@ class LoadingScreen {
                             Text(
                               snapshot.data as String,
                               textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                fontSize: 16,
+                              style: theme.textTheme.bodyLarge?.copyWith(
                                 fontWeight: FontWeight.w500,
-                                color: Colors.black87,
                                 height: 1.4,
                               ),
                             ),
                             const SizedBox(height: 8),
                             Text(
                               "Please wait...",
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.grey[600],
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color: theme.textTheme.bodyMedium?.color?.withAlpha(150),
                                 fontWeight: FontWeight.w400,
                               ),
                             ),

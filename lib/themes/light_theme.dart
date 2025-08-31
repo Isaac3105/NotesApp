@@ -14,6 +14,23 @@ ThemeData buildLightTheme() {
     // Scaffold theme
     scaffoldBackgroundColor: Colors.grey[50],
     
+    // Icon Theme
+    iconTheme: IconThemeData(
+      color: Colors.black
+    ),
+
+    // Pop up menu theme
+    popupMenuTheme: PopupMenuThemeData(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      elevation: 8,
+      color: Colors.white,
+      textStyle: GoogleFonts.poppins(
+        color: Colors.black87,
+      ),
+    ),
+
     // Card theme
     cardTheme: CardThemeData(
       elevation: 8,

@@ -3,34 +3,49 @@ import 'package:to_do_app/services/cloud/cloud_note.dart';
 import 'package:to_do_app/services/cloud/cloud_storage_constants.dart';
 import 'package:to_do_app/services/cloud/cloud_storage_exceptions.dart';
 
+enum NoteSortOption {
+  createdAt,
+  updatedAt,
+}
+
 class FirebaseCloudStorage {
   final notes = FirebaseFirestore.instance.collection("notes");
 
   Future<CloudNote> createNewNote({required String ownerUserId}) async {
     try {
-      final timestamp = Timestamp.now();
+      final now = Timestamp.now();
       final document = await notes.add({
         titleField: "",
         ownerUserIdFieldName: ownerUserId,
         textField: "",
-        timestampField: timestamp,
+        createdAtField: now,
+        updatedAtField: now,
       });
       final fetchedNote = await document.get();
       return CloudNote(
         documentId: fetchedNote.id,
         ownerUserId: ownerUserId,
         text: "", 
-        timestamp: timestamp, 
-        title: "",
+        createdAt: now, 
+        title: "", 
+        updatedAt: now,
       );
     } catch (e) {
       throw CouldNotCreateNoteException();
     }
   }
 
-  Stream<Iterable<CloudNote>> allNotes({required String ownerUserId}) {
-    final allNotes = notes.where(ownerUserIdFieldName, isEqualTo: ownerUserId)
-        .orderBy(timestampField, descending: true)
+  Stream<Iterable<CloudNote>> allNotes({
+    required String ownerUserId,
+    NoteSortOption sortBy = NoteSortOption.createdAt, 
+  }) {
+    final String sortField = sortBy == NoteSortOption.createdAt 
+        ? createdAtField 
+        : updatedAtField;
+        
+    final allNotes = notes
+        .where(ownerUserIdFieldName, isEqualTo: ownerUserId)
+        .orderBy(sortField, descending: true)
         .snapshots()
         .map((event) => event.docs.map((doc) => CloudNote.fromSnapshot(doc)));
     return allNotes;
@@ -42,7 +57,11 @@ class FirebaseCloudStorage {
     required String title,
   }) async {
     try {
-      await notes.doc(documentId).update({textField: text, titleField: title});
+      await notes.doc(documentId).update({
+        textField: text, 
+        titleField: title, 
+        updatedAtField: Timestamp.now(),
+      });
     } catch (e) {
       throw CouldNotUpdateNoteException();
     }

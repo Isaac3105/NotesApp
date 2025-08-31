@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:to_do_app/services/auth/auth_service.dart';
 import 'package:to_do_app/utils/dialogs/cannot_share_empty_note_dialog.dart';
+import 'package:to_do_app/utils/dialogs/error_dialog.dart';
 import 'package:to_do_app/utils/generics/get_arguments.dart';
 import 'package:to_do_app/services/cloud/cloud_note.dart';
 import 'package:to_do_app/services/cloud/firebase_cloud_storage.dart';
@@ -47,20 +48,28 @@ class _NewNoteViewState extends State<CreateUpdateNoteView> {
   void _saveNoteIfNotEmpty() async {
     final note = _note;
     if (note != null && (_textController.text.isNotEmpty || _titleController.text.isNotEmpty)) {
-      await _notesService.updateNote(
-        title: _titleController.text,
-        documentId: note.documentId,
-        text: _textController.text,
-      );
+      try {
+        await _notesService.updateNote(
+          title: _titleController.text,
+          documentId: note.documentId,
+          text: _textController.text,
+        );
+      } catch (e) {
+        if(mounted) await showErrorDialog(context, "Could not update note.");
+      }
     }
   }
 
   void _textControllerListener() async {
     final note = _note;
     if (note != null) {
-      final text = _textController.text;
-      final title = _titleController.text;
-      await _notesService.updateNote(documentId: note.documentId, text: text, title: title);
+      try {
+        final text = _textController.text;
+        final title = _titleController.text;
+        await _notesService.updateNote(documentId: note.documentId, text: text, title: title);
+      } catch (e) {
+        if(mounted) await showErrorDialog(context, "Could not update note.");
+      }
     }
   }
 
@@ -97,18 +106,20 @@ class _NewNoteViewState extends State<CreateUpdateNoteView> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widgetNote == null ? "New Note" : "Edit Note"),
-        backgroundColor: Colors.amber,
         actions: [
           IconButton(
             onPressed: () async {
               final text = _textController.text;
-              if (_note == null || text.isEmpty) {
+              final title = _titleController.text;
+              final shareText = title.isNotEmpty ? "$title\n\n$text" : text;
+              
+              if (_note == null || shareText.trim().isEmpty) {
                 await showCannotShareEmptyNoteDialog(context);
               } else {
-                SharePlus.instance.share(ShareParams(text: text));
+                SharePlus.instance.share(ShareParams(text: shareText));
               }
             },
-            icon: Icon(Icons.share),
+            icon: const Icon(Icons.share),
           ),
         ],
       ),
@@ -118,31 +129,57 @@ class _NewNoteViewState extends State<CreateUpdateNoteView> {
           switch (snapshot.connectionState) {
             case ConnectionState.done:
               _setupTextAndTitleControllerListener();
-              return SingleChildScrollView(
+              return Padding(
+                padding: const EdgeInsets.all(16.0),
                 child: Column(
                   children: [
                     TextField(
                       controller: _titleController,
                       autocorrect: true,
                       keyboardType: TextInputType.text,
-                      decoration: InputDecoration(
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      decoration: const InputDecoration(
                         hintText: "Note Title",
+                        border: InputBorder.none,
+                        hintStyle: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey,
+                        ),
                       ),
                     ),
-                    TextField(
-                      controller: _textController,
-                      autocorrect: true,
-                      keyboardType: TextInputType.multiline,
-                      maxLines: null,
-                      decoration: InputDecoration(
-                        hintText: "Start typing your note :)",
+                    const SizedBox(height: 16),
+                    Expanded(
+                      child: TextField(
+                        controller: _textController,
+                        autocorrect: true,
+                        keyboardType: TextInputType.multiline,
+                        maxLines: null,
+                        expands: true,
+                        textAlignVertical: TextAlignVertical.top,
+                        style: const TextStyle(fontSize: 16),
+                        decoration: const InputDecoration(
+                          hintText: "Start typing your note...",
+                          border: InputBorder.none,
+                          hintStyle: TextStyle(
+                            fontSize: 16,
+                            color: Colors.grey,
+                          ),
+                        ),
                       ),
                     ),
                   ],
                 ),
               );
             default:
-              return const Center(child: CircularProgressIndicator());
+              return const Center(
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.amber),
+                ),
+              );
           }
         },
       ),
