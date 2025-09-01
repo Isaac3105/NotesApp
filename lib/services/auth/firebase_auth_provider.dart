@@ -1,8 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
-import 'package:to_do_app/firebase_options.dart';
-import 'package:to_do_app/services/auth/auth_user.dart';
-import 'package:to_do_app/services/auth/auth_provider.dart' as auth_provider;
-import 'package:to_do_app/services/auth/auth_exceptions.dart';
+import 'package:notes_app/firebase_options.dart';
+import 'package:notes_app/services/auth/auth_user.dart';
+import 'package:notes_app/services/auth/auth_provider.dart' as auth_provider;
+import 'package:notes_app/services/auth/auth_exceptions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class FirebaseAuthProvider implements auth_provider.AuthProvider {

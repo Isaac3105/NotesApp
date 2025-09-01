@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:to_do_app/services/auth/auth_exceptions.dart';
-import 'package:to_do_app/services/auth/bloc/auth_bloc.dart';
-import 'package:to_do_app/services/auth/bloc/auth_event.dart';
-import 'package:to_do_app/services/auth/bloc/auth_state.dart';
-import 'package:to_do_app/utils/dialogs/error_dialog.dart';
+import 'package:notes_app/services/auth/auth_exceptions.dart';
+import 'package:notes_app/services/auth/bloc/auth_bloc.dart';
+import 'package:notes_app/services/auth/bloc/auth_event.dart';
+import 'package:notes_app/services/auth/bloc/auth_state.dart';
+import 'package:notes_app/utils/dialogs/error_dialog.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({super.key});
@@ -85,7 +85,7 @@ class _RegisterViewState extends State<RegisterView> {
                           "Greetings!",
                           style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                             fontWeight: FontWeight.bold,
-                            color: Colors.grey[800],
+                            color: Theme.of(context).textTheme.bodyMedium!.color,
                           ),
                         ),
                         

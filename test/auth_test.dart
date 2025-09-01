@@ -1,7 +1,7 @@
 import 'package:test/test.dart';
-import 'package:to_do_app/services/auth/auth_exceptions.dart';
-import 'package:to_do_app/services/auth/auth_provider.dart';
-import 'package:to_do_app/services/auth/auth_user.dart';
+import 'package:notes_app/services/auth/auth_exceptions.dart';
+import 'package:notes_app/services/auth/auth_provider.dart';
+import 'package:notes_app/services/auth/auth_user.dart';
 
 void main() {
   group('Mock Authentification', () {

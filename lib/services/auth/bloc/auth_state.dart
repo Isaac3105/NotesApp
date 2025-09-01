@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:to_do_app/services/auth/auth_user.dart';
+import 'package:notes_app/services/auth/auth_user.dart';
 import 'package:equatable/equatable.dart';
 
 @immutable

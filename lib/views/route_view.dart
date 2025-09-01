@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:to_do_app/helpers/loading/loading_screen.dart';
-import 'package:to_do_app/services/auth/bloc/auth_bloc.dart';
-import 'package:to_do_app/services/auth/bloc/auth_event.dart';
-import 'package:to_do_app/services/auth/bloc/auth_state.dart';
-import 'package:to_do_app/views/forgot_password_view.dart';
-import 'package:to_do_app/views/login_view.dart';
-import 'package:to_do_app/views/notes/notes_view.dart';
-import 'package:to_do_app/views/register_view.dart';
+import 'package:notes_app/helpers/loading/loading_screen.dart';
+import 'package:notes_app/services/auth/bloc/auth_bloc.dart';
+import 'package:notes_app/services/auth/bloc/auth_event.dart';
+import 'package:notes_app/services/auth/bloc/auth_state.dart';
+import 'package:notes_app/views/forgot_password_view.dart';
+import 'package:notes_app/views/login_view.dart';
+import 'package:notes_app/views/notes/notes_view.dart';
+import 'package:notes_app/views/register_view.dart';
 import 'verify_email_view.dart';
 
 class RouteView extends StatelessWidget {

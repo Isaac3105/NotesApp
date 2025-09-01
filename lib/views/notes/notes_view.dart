@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:to_do_app/constants/routes.dart';
-import 'package:to_do_app/enums/menu_actions.dart';
-import 'package:to_do_app/services/auth/auth_service.dart';
-import 'package:to_do_app/services/auth/bloc/auth_bloc.dart';
-import 'package:to_do_app/services/auth/bloc/auth_event.dart';
-import 'package:to_do_app/services/cloud/cloud_note.dart';
-import 'package:to_do_app/services/cloud/firebase_cloud_storage.dart';
-import 'package:to_do_app/utils/dialogs/log_out_dialog.dart';
-import 'package:to_do_app/views/notes/notes_list_view.dart';
+import 'package:notes_app/constants/routes.dart';
+import 'package:notes_app/enums/menu_actions.dart';
+import 'package:notes_app/services/auth/auth_service.dart';
+import 'package:notes_app/services/auth/bloc/auth_bloc.dart';
+import 'package:notes_app/services/auth/bloc/auth_event.dart';
+import 'package:notes_app/services/cloud/cloud_note.dart';
+import 'package:notes_app/services/cloud/firebase_cloud_storage.dart';
+import 'package:notes_app/utils/dialogs/log_out_dialog.dart';
+import 'package:notes_app/views/notes/notes_list_view.dart';
 
 class ToDoView extends StatefulWidget {
   const ToDoView({super.key});

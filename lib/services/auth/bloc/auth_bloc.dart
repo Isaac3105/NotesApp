@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:to_do_app/services/auth/auth_provider.dart';
-import 'package:to_do_app/services/auth/bloc/auth_event.dart';
-import 'package:to_do_app/services/auth/bloc/auth_state.dart';
+import 'package:notes_app/services/auth/auth_provider.dart';
+import 'package:notes_app/services/auth/bloc/auth_event.dart';
+import 'package:notes_app/services/auth/bloc/auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc(AuthProvider provider) : super(const AuthStateOnInitialize(isLoading: true)) {
