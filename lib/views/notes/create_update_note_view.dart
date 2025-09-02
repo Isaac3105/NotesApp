@@ -9,6 +9,7 @@ import 'package:notes_app/services/cloud/cloud_note.dart';
 import 'package:notes_app/services/cloud/firebase_cloud_storage.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
 import 'package:dart_quill_delta/dart_quill_delta.dart';
+import 'package:flutter_quill_extensions/flutter_quill_extensions.dart';
 
 class CreateUpdateNoteView extends StatefulWidget {
   const CreateUpdateNoteView({super.key});
@@ -166,12 +167,77 @@ class _NewNoteViewState extends State<CreateUpdateNoteView> {
                     Expanded(
                       child: Column(
                         children: [
-                          quill.QuillSimpleToolbar(
-                            controller: _contentController,
+                          Container(
+                            height: 60,
+                            decoration: BoxDecoration(
+                              border: Border(
+                                bottom: BorderSide(color: Colors.grey.shade300),
+                              ),
+                            ),
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Theme(
+                                data: Theme.of(context).copyWith(
+                                  primaryColor: Colors.blue,
+                                  colorScheme: Theme.of(context).colorScheme.copyWith(
+                                    primary: const Color.fromARGB(255, 253, 205, 94),
+                                    onPrimary: Colors.white,
+                                  ),
+                                ),
+                                child: quill.QuillSimpleToolbar(
+                                  controller: _contentController,
+                                  config: quill.QuillSimpleToolbarConfig(
+                                    showBoldButton: true,
+                                    showItalicButton: true,
+                                    showUnderLineButton: false,
+                                    showStrikeThrough: false,
+                                    
+                                    showFontSize: false,
+                                    
+                                    showListNumbers: true,
+                                    showListBullets: true,
+                                    showListCheck: true,
+                                    
+                                    showUndo: true,
+                                    showRedo: true,
+                                    
+                                    showFontFamily: false,
+                                    showColorButton: false,
+                                    showBackgroundColorButton: false,
+                                    showClearFormat: false,
+                                    showAlignmentButtons: false,
+                                    showLeftAlignment: false,
+                                    showCenterAlignment: false,
+                                    showRightAlignment: false,
+                                    showJustifyAlignment: false,
+                                    showInlineCode: false,
+                                    showCodeBlock: false,
+                                    showHeaderStyle: false,
+                                    showQuote: false,
+                                    showIndent: false,
+                                    showLink: false,
+                                    showDirection: false,
+                                    showSearchButton: false,
+                                    showSuperscript: false,
+                                    showSubscript: false,
+                                    
+                                    embedButtons: FlutterQuillEmbeds.toolbarButtons(),
+                                  ),
+                                ),
+                              ),
+                            ),
                           ),
                           Expanded(
-                            child: quill.QuillEditor.basic(
-                              controller: _contentController,
+                            child: Container(
+                              width: double.infinity,
+                              padding: const EdgeInsets.all(8.0),
+                              child: quill.QuillEditor.basic(
+                                controller: _contentController,
+                                config: quill.QuillEditorConfig(
+                                  placeholder: 'Start typing your note...',
+                                  embedBuilders: FlutterQuillEmbeds.editorBuilders(),
+                                ),
+                              ),
                             ),
                           ),
                         ],

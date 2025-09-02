@@ -51,6 +51,7 @@ dependencies:
   flutter_lints: ^6.0.0
   flutter_quill: ^11.4.2
   dart_quill_delta: ^10.8.3
+  flutter_quill_extensions: ^11.0.0
   flutter_localizations:
     sdk: flutter
 
