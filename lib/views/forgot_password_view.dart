@@ -95,7 +95,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                           "Reset Password",
                           style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                             fontWeight: FontWeight.bold,
-                            color: Colors.grey[800],
+                            color: Theme.of(context).textTheme.bodyMedium!.color,
                           ),
                         ),
                         const SizedBox(height: 8),
