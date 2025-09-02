@@ -43,7 +43,7 @@ class _NewNoteViewState extends State<CreateUpdateNoteView> {
 
   void _deleteNoteIfEmpty() {
     final note = _note;
-    if (note != null && _contentController.document.toPlainText().isEmpty && _titleController.text.isEmpty) {
+    if (note != null && _contentController.document.toPlainText().trim().isEmpty && _titleController.text.trim().isEmpty) {
       _notesService.deleteNote(documentId: note.documentId);
       _note = null;
     }
@@ -51,7 +51,7 @@ class _NewNoteViewState extends State<CreateUpdateNoteView> {
 
   void _saveNoteIfNotEmpty() async {
     final note = _note;
-    if (note != null && (_contentController.document.toPlainText().isNotEmpty || _titleController.text.isNotEmpty)) {
+    if (note != null && (_contentController.document.toPlainText().trim().isNotEmpty || _titleController.text.trim().isNotEmpty)) {
       try {
         await _notesService.updateNote(
           title: _titleController.text,
@@ -67,12 +67,18 @@ class _NewNoteViewState extends State<CreateUpdateNoteView> {
   void _textControllerListener() async {
     final note = _note;
     if (note != null) {
-      try {
-        final content = jsonEncode(_contentController.document.toDelta().toJson());
-        final title = _titleController.text;
-        await _notesService.updateNote(documentId: note.documentId, content: content, title: title);
-      } catch (e) {
-        if(mounted) await showErrorDialog(context, "Could not update note.");
+      // Only save if there's actual content (not just whitespace)
+      final plainText = _contentController.document.toPlainText().trim();
+      final titleText = _titleController.text.trim();
+      
+      if (plainText.isNotEmpty || titleText.isNotEmpty) {
+        try {
+          final content = jsonEncode(_contentController.document.toDelta().toJson());
+          final title = _titleController.text;
+          await _notesService.updateNote(documentId: note.documentId, content: content, title: title);
+        } catch (e) {
+          if(mounted) await showErrorDialog(context, "Could not update note.");
+        }
       }
     }
   }
