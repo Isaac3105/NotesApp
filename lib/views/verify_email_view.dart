@@ -55,7 +55,7 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
                       "Verify Email",
                       style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                         fontWeight: FontWeight.bold,
-                        color: Colors.grey[800],
+                        color: Theme.of(context).textTheme.bodyMedium!.color
                       ),
                     ),
                     const SizedBox(height: 8),
