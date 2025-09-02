@@ -8,6 +8,7 @@ import 'package:notes_app/services/auth/bloc/auth_event.dart';
 import 'package:notes_app/services/cloud/cloud_note.dart';
 import 'package:notes_app/services/cloud/firebase_cloud_storage.dart';
 import 'package:notes_app/utils/dialogs/log_out_dialog.dart';
+import 'package:notes_app/utils/quill_helpers.dart';
 import 'package:notes_app/views/notes/notes_list_view.dart';
 
 class ToDoView extends StatefulWidget {
@@ -128,7 +129,7 @@ class _ToDoViewState extends State<ToDoView> {
                 final allNotes = snapshot.data as Iterable<CloudNote>;
                 
                 final validNotes = allNotes.where((note) => 
-                  note.text.isNotEmpty || note.title.isNotEmpty
+                  QuillHelpers.hasContent(note.text) || note.title.isNotEmpty
                 ).toList();
                 
                 if (validNotes.isEmpty) {

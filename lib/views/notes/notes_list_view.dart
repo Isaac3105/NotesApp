@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:notes_app/services/cloud/cloud_note.dart';
 import 'package:notes_app/utils/dialogs/delete_note_dialog.dart';
+import 'package:notes_app/utils/quill_helpers.dart';
 
 typedef NoteCallback = void Function(CloudNote note);
 
@@ -100,10 +101,10 @@ class NotesListView extends StatelessWidget {
                   ),
                 ],
               ),
-              if (note.text.isNotEmpty) ...[
+              if (QuillHelpers.hasContent(note.text)) ...[
                 const SizedBox(height: 12),
                 Text(
-                  note.text,
+                  QuillHelpers.getPlainTextFromQuillJson(note.text),
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.grey[700],

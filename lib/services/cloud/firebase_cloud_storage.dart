@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:notes_app/services/cloud/cloud_note.dart';
 import 'package:notes_app/services/cloud/cloud_storage_constants.dart';
 import 'package:notes_app/services/cloud/cloud_storage_exceptions.dart';
+import 'package:notes_app/utils/quill_helpers.dart';
 
 enum NoteSortOption {
   createdAt,
@@ -17,7 +18,7 @@ class FirebaseCloudStorage {
       final document = await notes.add({
         titleField: "",
         ownerUserIdFieldName: ownerUserId,
-        textField: "",
+        contentField: "",
         createdAtField: now,
         updatedAtField: now,
       });
@@ -64,7 +65,9 @@ class FirebaseCloudStorage {
       final query = searchQuery.toLowerCase();
       return notes.where((note) {
         final titleMatch = note.title.toLowerCase().contains(query);
-        final textMatch = note.text.toLowerCase().contains(query);
+        // Convert Quill JSON to plain text for searching
+        final plainText = QuillHelpers.getPlainTextFromQuillJson(note.text);
+        final textMatch = plainText.toLowerCase().contains(query);
         return titleMatch || textMatch;
       });
     });
@@ -72,12 +75,12 @@ class FirebaseCloudStorage {
 
   Future<void> updateNote({
     required String documentId,
-    required String text,
+    required String content,
     required String title,
   }) async {
     try {
       await notes.doc(documentId).update({
-        textField: text, 
+        contentField: content, 
         titleField: title, 
         updatedAtField: Timestamp.now(),
       });

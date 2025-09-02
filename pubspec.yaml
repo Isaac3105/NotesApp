@@ -49,6 +49,10 @@ dependencies:
   flutter_launcher_icons: ^0.14.4
   google_fonts: ^6.3.1
   flutter_lints: ^6.0.0
+  flutter_quill: ^11.4.2
+  dart_quill_delta: ^10.8.3
+  flutter_localizations:
+    sdk: flutter
 
 dev_dependencies:
   flutter_test:
