@@ -2,10 +2,9 @@
 
 A modern, feature-rich notes application built with Flutter and Firebase. Create, edit, and organize your notes with rich text formatting, image support, and real-time cloud synchronization.
 
-## 📱 Screenshots
+## 📱 Screencast
 
-*Note: Add screenshots of app here*
-
+https://github.com/user-attachments/assets/649f77da-174a-4a21-8888-44b18b141713
 
 ## ✨ Features
 
