@@ -54,6 +54,7 @@ dependencies:
   flutter_quill_extensions: ^11.0.0
   flutter_localizations:
     sdk: flutter
+  flutter_native_splash: ^2.4.6
 
 dev_dependencies:
   flutter_test:
@@ -105,5 +106,36 @@ flutter:
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
   #
-  # For details regarding fonts from package dependencies,
-  # see https://flutter.dev/to/font-from-package
+# For details regarding fonts from package dependencies,
+# see https://flutter.dev/to/font-from-package
+
+# Flutter Native Splash configuration
+flutter_native_splash:
+  # This package generates native code to customize Flutter's default white native splash screen
+  # with background color and splash image.
+  # Customize the parameters below, and run the following command in the terminal:
+  # dart run flutter_native_splash:create
+  # To restore Flutter's default white splash screen, run the following command in the terminal:
+  # dart run flutter_native_splash:remove
+
+  # To use a colored background instead of a transparent background
+  color: "#FFC107"  # Amber color to match your app theme
+  # color_dark: "#FF6F00"  # Optional: different color for dark mode
+  
+  # The android, ios and web parameters can be used to disable the splash screen on a specific platform
+  # android: false
+  # ios: false
+  # web: false
+  
+  # Platform Android specific
+  android_gravity: center
+  android_12:
+    # The color parameter sets the background color for Android 12+
+    color: "#FFC107"
+    # color_dark: "#FF6F00"
+  
+  # Platform iOS specific  
+  ios_content_mode: center
+  
+  # Platform Web specific
+  web_image_mode: center

@@ -10,6 +10,7 @@ import 'package:notes_app/services/cloud/firebase_cloud_storage.dart';
 import 'package:notes_app/utils/dialogs/log_out_dialog.dart';
 import 'package:notes_app/utils/quill_helpers.dart';
 import 'package:notes_app/views/notes/notes_list_view.dart';
+import 'package:notes_app/main.dart';
 
 class ToDoView extends StatefulWidget {
   const ToDoView({super.key});
@@ -60,6 +61,15 @@ class _ToDoViewState extends State<ToDoView> {
                 },
               )
             : const Text("My Notes"),
+        leading: IconButton(
+            icon: Icon(Theme.of(context).brightness == Brightness.dark 
+                ? Icons.light_mode 
+                : Icons.dark_mode),
+            onPressed: () {
+              final appState = MyNotesApp.of(context);
+              appState?.toggleTheme();
+            },
+          ),
         actions: [
           if (_isSearching) ...[
             IconButton(
