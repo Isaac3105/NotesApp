@@ -128,7 +128,7 @@ The app features a beautiful amber-based color scheme with both light and dark v
 
 ## 📱 Screenshots
 
-*Note: Add screenshots of your app here*
+*Note: Add screenshots of app here*
 
 ## 🔧 Configuration
 
