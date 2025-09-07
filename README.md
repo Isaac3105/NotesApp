@@ -2,6 +2,11 @@
 
 A modern, feature-rich notes application built with Flutter and Firebase. Create, edit, and organize your notes with rich text formatting, image support, and real-time cloud synchronization.
 
+## 📱 Screenshots
+
+*Note: Add screenshots of app here*
+
+
 ## ✨ Features
 
 ### 🎨 **Rich Text Editor**
@@ -126,31 +131,7 @@ The app features a beautiful amber-based color scheme with both light and dark v
 - **Manual Toggle**: Users can switch themes anytime
 - **Consistent Branding**: Amber (#FFC107) throughout the app
 
-## 📱 Screenshots
 
-*Note: Add screenshots of app here*
-
-## 🔧 Configuration
-
-### Environment Variables
-Edit the `.env` file in the root directory:
-```env
-# Add your Firebase configuration here
-```
-
-### Firebase Rules
-Ensure your Firestore security rules allow authenticated users to read/write their own notes:
-
-```javascript
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    match /users/{userId}/notes/{document=**} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
-    }
-  }
-}
-```
 
 ## 🚧 Future Enhancements
 
