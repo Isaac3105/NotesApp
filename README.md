@@ -4,7 +4,7 @@ A modern, feature-rich notes application built with Flutter and Firebase. Create
 
 ## 📱 Screencast
 
-https://github.com/user-attachments/assets/649f77da-174a-4a21-8888-44b18b141713
+[Watch the Demo](https://github.com/user-attachments/assets/649f77da-174a-4a21-8888-44b18b141713)
 
 ## ✨ Features
 
